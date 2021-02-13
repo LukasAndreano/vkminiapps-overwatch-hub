@@ -96,7 +96,7 @@ class Arts extends React.Component {
 		return (
 		<Panel id={id}>
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
-				АРТЫ
+				Арты
 			</PanelHeader>
 			{this.state.spinner === true && <ScreenSpinner size='large' />}
 	            <Tabs>

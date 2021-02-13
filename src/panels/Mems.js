@@ -92,7 +92,7 @@ class Mems extends React.Component {
 		return (
 		<Panel id={id}>
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
-				МЕМЫ
+				Мемы
 			</PanelHeader>
 			{this.state.spinner === true && <ScreenSpinner size='large' />}
 	            <Tabs>

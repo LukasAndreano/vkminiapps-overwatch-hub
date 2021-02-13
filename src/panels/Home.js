@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
+import moment from 'moment';
 import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
 import {
 	Avatar,
@@ -11,10 +12,10 @@ import {
 	Panel,
 	SimpleCell,
 	Snackbar,
-	Footer,
+	Banner,
 	Switch,
 	CardScroll,
-	ContentCard
+	ContentCard,
 } from '@vkontakte/vkui';
 import {
 	Icon28UsersOutline,
@@ -26,10 +27,9 @@ import {
 	Icon28FaceRecognitionOutline,
 	Icon28PictureStackOutline,
 	Icon28MasksOutline,
-	Icon28FireOutline
+	Icon28FireOutline,
+	Icon48DonateOutline,
 } from '@vkontakte/icons';
-
-var request = require('sync-request');
 
 class Home extends React.Component {
 	constructor(props) {
@@ -48,11 +48,18 @@ class Home extends React.Component {
 			{this.props.user &&
 			fetch('https://cloud.irbot.net/ow_arcade/api?act=subscribed&key=atQ9fP8qbNZUZ5Qm&user_id='+this.props.user.id)
 				.then(response => response.json())
-				.then(data => this.setState({ subscribed: data.subscribed, request: true}));
+				.then(data => {
+					if (data.subscribed == true) {
+						this.setState({ subscribed: data.subscribed, switch: <Switch checked />, request: true })
+					} else {
+						this.setState({ subscribed: data.subscribed, switch: <Switch />, request: true })
+					}
+				});
 			}
 		}
 	}
 	subscribeme() {
+		this.setState({switch: <Switch checked />});
 		let {user} = this.props;
 		{user &&
 			bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 197332265})
@@ -74,6 +81,7 @@ class Home extends React.Component {
 			})
 			.catch(error => {
 				bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
+				this.setState({subscribed: false, switch: <Switch />});
 				this.setState({snackbar:
 				    <Snackbar
 				      onClose={() => this.setState({ snackbar: null })}
@@ -86,13 +94,14 @@ class Home extends React.Component {
 		}
 	}
 	unsubscribeme() {
+		this.setState({switch: <Switch />});
 		let {user} = this.props;
 		{user &&
 		fetch('https://cloud.irbot.net/ow_arcade/api?act=unsubscribe&key=atQ9fP8qbNZUZ5Qm&user_id='+user.id)
 			.then(response => response.json())
 			.then(data => {
 				bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-				this.setState({ subscribed: data.subscribed });
+				this.setState({ subscribed: false });
 				this.setState({snackbar:
 					<Snackbar
 					    onClose={() => this.setState({ snackbar: null })}
@@ -101,7 +110,7 @@ class Home extends React.Component {
 					    Рассылка отключена
 					</Snackbar>
 				});
-			});
+			})
 		}
 	}
 	render() {
@@ -109,7 +118,8 @@ class Home extends React.Component {
 		let {id, go, arcades, snackbarError} = this.props;
 		return (
 			<Panel id={id}>
-				<PanelHeader>OW HUB</PanelHeader>
+				<PanelHeader>Главная</PanelHeader>
+        		<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-18").diff(moment().format(), "days") + " д."} asideMode="expand" />
 				<Group>
 					<CardScroll size="s" style={{ marginBottom: "-50px" }}>
 			            <ContentCard
@@ -178,11 +188,10 @@ class Home extends React.Component {
 					<SimpleCell onClick={go} data-to="arts" expandable before={<Icon28PictureStackOutline />}>Арты</SimpleCell>
 					<SimpleCell onClick={go} data-to="history" expandable before={<Icon28HistoryBackwardOutline />}>История аркад</SimpleCell>
 					{this.state.subscribed
-					? <SimpleCell onClick={this.unsubscribeme} before={<Icon28Notifications />} after={<Switch defaultChecked />}>Рассылка с аркадами</SimpleCell>
-					: <SimpleCell onClick={this.subscribeme} before={<Icon28Notifications />} after={<Switch />}>Рассылка с аркадами</SimpleCell>}
+					? <SimpleCell onClick={this.unsubscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>
+					: <SimpleCell onClick={this.subscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>}
 					<SimpleCell onClick={go} data-to="faq" expandable before={<Icon28HelpCircleOutline />}>Описание приложения</SimpleCell>
 				</Group>
-				<Footer>Обновляется каждый день в 07:00 по МСК</Footer>
 			    {this.state.text && <Group><Div>{this.state.text}</Div></Group>}
           		{this.state.snackbar}
           		{snackbarError}

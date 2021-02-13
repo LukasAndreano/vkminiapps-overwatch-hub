@@ -93,7 +93,7 @@ class Screenshots extends React.Component {
 		return (
 		<Panel id={id}>
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
-				СКРИНШОТЫ
+				Скриншоты
 			</PanelHeader>
 			{this.state.spinner === true && <ScreenSpinner size='large' />}
 	            <Tabs>

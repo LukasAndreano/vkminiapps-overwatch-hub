@@ -17,9 +17,6 @@ import '../css/Intro.css';
 const Intro = ({id, snackbarError, user, userHasSeenIntro, go}) => {
 	return (
 		<Panel id={id} centered={true}>
-			<PanelHeader>
-				OW HUB
-			</PanelHeader>
 			{(!userHasSeenIntro && user) && 
 				<Fragment>
 					<Group>

@@ -21,6 +21,7 @@ import News from './panels/News';
 import Screenshots from './panels/Screenshots';
 import Arts from './panels/Arts';
 import Mems from './panels/Mems';
+import Weeklyskin from './panels/Weeklyskin';
 
 const ROUTES = {
 	HOME: 'home',
@@ -32,6 +33,7 @@ const ROUTES = {
 	SCREENSHOTS: 'screenshots',
 	ARTS: 'arts',
 	MEMS: 'mems',
+	WEEKLYSKIN: 'weeklyskin',
 }
 
 const STORAGE_KEYS = {
@@ -39,20 +41,21 @@ const STORAGE_KEYS = {
 }
 
 const App = () => {
-	const [activePanel, setActivePanel] = useState(ROUTES.INTRO);
+	const [activePanel, setActivePanel] = useState(ROUTES.HOME);
 	const [user, setUser] = useState(null);
 	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
 	const [userHasSeenIntro, setUserHasSeenIntro] = useState(false);
 	const [snackbar, setSnackbar] = useState(false);
 
+	bridge.subscribe(({ detail: { type, data }}) => {
+		if (type === 'VKWebAppUpdateConfig') {
+			const schemeAttribute = document.createAttribute('scheme');
+			schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
+			document.body.attributes.setNamedItem(schemeAttribute);
+		}
+	});
+
 	useEffect(() => {
-		bridge.subscribe(({ detail: { type, data }}) => {
-			if (type === 'VKWebAppUpdateConfig') {
-				const schemeAttribute = document.createAttribute('scheme');
-				schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-				document.body.attributes.setNamedItem(schemeAttribute);
-			}
-		});
 		async function fetchData() {
 			const user = await bridge.send('VKWebAppGetUserInfo');
 			const storageData = await bridge.send('VKWebAppStorageGet', {
@@ -65,8 +68,9 @@ const App = () => {
 					switch (key) {
 						case STORAGE_KEYS.STATUS:
 							if (data[key].hasSeenIntro) {
-								setActivePanel(ROUTES.HOME);
 								setUserHasSeenIntro(true);
+							} else {
+								setActivePanel(ROUTES.INTRO);
 							}
 							break;
 						default:
@@ -92,7 +96,16 @@ const App = () => {
 	const go = e => {
 		setActivePanel(e.currentTarget.dataset.to);
 	};
-	
+
+	document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener('popstate', function (e) {
+            history.pushState(null, null, window.location.pathname);
+            setActivePanel(ROUTES.HOME);
+        });
+        history.pushState(null, null, window.location.pathname);
+        setActivePanel(ROUTES.HOME);
+    })
+
 	const viewIntro = async function() {
 		try {
 			await bridge.send('VKWebAppStorageSet', {
@@ -123,6 +136,7 @@ const App = () => {
 			<Screenshots id={ROUTES.SCREENSHOTS} go={go} />
 			<Arts id={ROUTES.ARTS} go={go} />
 			<Mems id={ROUTES.MEMS} go={go} />
+			<Weeklyskin id={ROUTES.WEEKLYSKIN} go={go} />
 		</View>
 	);
 };

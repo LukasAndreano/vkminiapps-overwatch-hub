@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
 	Panel,
 	PanelHeader,
@@ -33,7 +33,7 @@ class Update extends React.Component {
 		return (
 		<Panel id={id}>
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
-				ОБНОВЛЕНИЕ
+				Обновление
 			</PanelHeader>
 			<Div>
 				<Card>

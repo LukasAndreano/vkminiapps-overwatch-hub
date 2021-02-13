@@ -63,7 +63,7 @@ class History extends React.Component {
 		return (
 		<Panel id={id}>
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
-				ИСТОРИЯ АРКАД
+				История аркад
 			</PanelHeader>
 			<Group header={<Header mode="secondary">ИСТОРИЯ АРКАД ЗА ПОСЛЕДНИЕ 3 ДНЯ</Header>}>
 				<CardScroll size="m" style={{ marginBottom: "-50px" }}>

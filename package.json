@@ -1,6 +1,6 @@
 {
   "name": "OWARCADE",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Мини-приложение, показывающее список аркад по игре Overwatch",
   "main": "index.js",
   "scripts": {
@@ -32,9 +32,11 @@
     "eruda-code": "^2.0.0",
     "eruda-dom": "^2.0.0",
     "json-loader": "^0.5.7",
+    "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-router-dom": "^5.2.0",
     "sync-request": "^6.1.0"
   },
   "browserslist": {
