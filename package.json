@@ -1,6 +1,6 @@
 {
-  "name": "OWARCADE",
-  "version": "1.0.6",
+  "name": "OWHUB",
+  "version": "1.0.7",
   "description": "Мини-приложение, показывающее список аркад по игре Overwatch",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,6 @@
     "@vkontakte/vk-miniapps-deploy": "^0.0.17",
     "@vkontakte/vkjs": "^0.20.0",
     "@vkontakte/vkui": "^4.0.8",
-    "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "chalk": "^2.4.2",
     "core-js": "^3.8.3",

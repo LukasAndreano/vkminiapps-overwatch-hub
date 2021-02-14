@@ -13,6 +13,9 @@ package-lock.json
 
 # Prod Bundle
 /build
+bundle.zip
+build.zip
+yarn.lock
 
 .vscode
 .idea
