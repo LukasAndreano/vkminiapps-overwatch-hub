@@ -24,6 +24,7 @@ import Screenshots from './panels/Screenshots';
 import Arts from './panels/Arts';
 import Mems from './panels/Mems';
 import Weeklyskin from './panels/Weeklyskin';
+import Randomgg from './panels/Randomgg';
 
 const ROUTES = {
 	HOME: 'home',
@@ -140,6 +141,7 @@ const App = () => {
 			<Arts id={ROUTES.ARTS} go={go} />
 			<Mems id={ROUTES.MEMS} go={go} />
 			<Weeklyskin id={ROUTES.WEEKLYSKIN} go={go} />
+			<Randomgg id={ROUTES.RANDOMGG} go={go} />
 		</View>
 	);
 };

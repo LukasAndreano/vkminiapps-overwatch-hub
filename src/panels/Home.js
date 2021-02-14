@@ -192,8 +192,11 @@ class Home extends React.Component {
 					<SimpleCell onClick={go} data-to="screenshots" expandable before={<Icon28FaceRecognitionOutline />}>Скриншоты персонажей</SimpleCell>
 					<SimpleCell onClick={go} data-to="arts" expandable before={<Icon28PictureStackOutline />}>Арты</SimpleCell>
 				</Group>
+				<Group header={<Header mode="secondary">Развлечения</Header>}>
+					<SimpleCell onClick={go} data-to="randomgg" expandable before={<Icon28SparkleOutline />}>Случайный голдган</SimpleCell>
+				</Group>
 				<Group header={<Header mode="secondary">Аркады и описание приложения</Header>}>
-					<SimpleCell onClick={go} data-to="randomgg" expandable before={<Icon28HistoryBackwardOutline />}>История аркад</SimpleCell>
+					<SimpleCell onClick={go} data-to="history" expandable before={<Icon28HistoryBackwardOutline />}>История аркад</SimpleCell>
 					{this.state.subscribed
 					? <SimpleCell onClick={this.unsubscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>
 					: <SimpleCell onClick={this.subscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>}

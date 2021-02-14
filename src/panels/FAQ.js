@@ -86,7 +86,7 @@ class FAQ extends React.Component {
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО ПРИЛОЖЕНИЕ"
 		              header="Приложение"
-		              text="Текущая версия приложения: 1.0.6. Разработчик: Никита Балин"
+		              text="Текущая версия приложения: 1.0.7. Разработчик: Никита Балин"
 		              maxHeight={200}
 		            />
 		        </CardGrid>

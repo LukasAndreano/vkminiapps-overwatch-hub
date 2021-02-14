@@ -52,15 +52,29 @@ class Mems extends React.Component {
 				var rows = [];
 				for (var i = 0; i < 30; i++) {
 					if (data.posts.response.items[i].marked_as_ads == 0 && data.img[i]) {
-						rows.push(<ContentCard
-							image={data.img[i]}
-							text={data.posts.response.items[i].text}
-							caption={group_name}
-							disabled
-						/>);
-						rows.push(
-							<Button size="l" onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + group_id + "?w=wall-" + group_id + "_" + data.posts.response.items[i].id}>Перейти к публикации</Button>
-						);
+						if (group_id == '194949226') {
+							if (data.posts.response.items[i].text.search('#overwatch_memes@jaristo_squad') !== -1) {
+								rows.push(<ContentCard
+									image={data.img[i]}
+									text={data.posts.response.items[i].text}
+									caption={group_name}
+									disabled
+								/>);
+								rows.push(
+									<Button size="l" onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + group_id + "?w=wall-" + group_id + "_" + data.posts.response.items[i].id}>Перейти к публикации</Button>
+								);
+							}
+						} else {
+							rows.push(<ContentCard
+								image={data.img[i]}
+								text={data.posts.response.items[i].text}
+								caption={group_name}
+								disabled
+							/>);
+							rows.push(
+								<Button size="l" onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + group_id + "?w=wall-" + group_id + "_" + data.posts.response.items[i].id}>Перейти к публикации</Button>
+							);
+						}
 					}
 				}
 				this.setState({ rows: rows, spinner: false });
@@ -99,6 +113,9 @@ class Mems extends React.Component {
 	                <HorizontalScroll>
 	                  <TabsItem onClick={() => this.changePage('irman', 59381513, 'IRMAN')} selected={this.state.activeTab === 'irman'}>
 	                    Irman
+	                  </TabsItem>
+	                  <TabsItem onClick={() => this.changePage('Jaristo Squad', 194949226, 'Jaristo Squad | Overwatch')} selected={this.state.activeTab === 'Jaristo Squad'}>
+	                    Jaristo Squad
 	                  </TabsItem>
 	                </HorizontalScroll>
 	            </Tabs>
