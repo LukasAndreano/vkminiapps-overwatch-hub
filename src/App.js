@@ -12,6 +12,8 @@ const request = require('sync-request');
 
 import OverwatchDailyArcadeIcon from './img/ow_arcade.jpg';
 
+import "./css/Index.css";
+
 import Home from './panels/Home';
 import Intro from './panels/Intro';
 import Update from './panels/Update';
@@ -34,6 +36,7 @@ const ROUTES = {
 	ARTS: 'arts',
 	MEMS: 'mems',
 	WEEKLYSKIN: 'weeklyskin',
+	RANDOMGG: 'randomgg',
 }
 
 const STORAGE_KEYS = {
@@ -98,7 +101,7 @@ const App = () => {
 	};
 
 	document.addEventListener('DOMContentLoaded', function () {
-        window.addEventListener('popstate', function (e) {
+		window.addEventListener('popstate', function (e) {
             history.pushState(null, null, window.location.pathname);
             setActivePanel(ROUTES.HOME);
         });

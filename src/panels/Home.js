@@ -16,6 +16,7 @@ import {
 	Switch,
 	CardScroll,
 	ContentCard,
+	PanelHeaderButton
 } from '@vkontakte/vkui';
 import {
 	Icon28UsersOutline,
@@ -28,6 +29,7 @@ import {
 	Icon28PictureStackOutline,
 	Icon28MasksOutline,
 	Icon28FireOutline,
+	Icon28SparkleOutline,
 	Icon48DonateOutline,
 } from '@vkontakte/icons';
 
@@ -39,6 +41,7 @@ class Home extends React.Component {
 			snackbar: null,
 			request: false,
 			subscribed: false,
+			alert: false,
 		};
 		this.subscribeme = this.subscribeme.bind(this);
 		this.unsubscribeme = this.unsubscribeme.bind(this);
@@ -59,38 +62,40 @@ class Home extends React.Component {
 		}
 	}
 	subscribeme() {
-		this.setState({switch: <Switch checked />});
 		let {user} = this.props;
-		{user &&
-			bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 197332265})
-			.then(data => {
-				fetch('https://cloud.irbot.net/ow_arcade/api?act=subscribe&key=atQ9fP8qbNZUZ5Qm&user_id='+user.id)
-					.then(response => response.json())
-					.then(data => {
-						bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-						this.setState({ subscribed: data.subscribed });
-						this.setState({snackbar:
-							<Snackbar
-							    onClose={() => this.setState({ snackbar: null })}
-							    before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
-							>
-							    Рассылка активирована
-							</Snackbar>
+		if (this.state.alert == false) {
+			this.setState({switch: <Switch checked />, alert: true});
+			{user &&
+				bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 197332265})
+				.then(data => {
+					fetch('https://cloud.irbot.net/ow_arcade/api?act=subscribe&key=atQ9fP8qbNZUZ5Qm&user_id='+user.id)
+						.then(response => response.json())
+						.then(data => {
+							bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
+							this.setState({ subscribed: data.subscribed });
+							this.setState({snackbar:
+								<Snackbar
+								    onClose={() => this.setState({ snackbar: null, alert: false })}
+								    before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
+								>
+								    Рассылка активирована
+								</Snackbar>
+							});
 						});
+				})
+				.catch(error => {
+					bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
+					this.setState({subscribed: false, switch: <Switch />, alert: false});
+					this.setState({snackbar:
+					    <Snackbar
+					      onClose={() => this.setState({ snackbar: null })}
+					      before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
+					    >
+					    	Подписка на рассылку отменена
+					    </Snackbar>
 					});
-			})
-			.catch(error => {
-				bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
-				this.setState({subscribed: false, switch: <Switch />});
-				this.setState({snackbar:
-				    <Snackbar
-				      onClose={() => this.setState({ snackbar: null })}
-				      before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
-				    >
-				    	Подписка на рассылку отменена
-				    </Snackbar>
 				});
-			});
+			}
 		}
 	}
 	unsubscribeme() {
@@ -118,7 +123,7 @@ class Home extends React.Component {
 		let {id, go, arcades, snackbarError} = this.props;
 		return (
 			<Panel id={id}>
-				<PanelHeader>Главная</PanelHeader>
+				<PanelHeader left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
         		<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-18").diff(moment().format(), "days") + " д."} asideMode="expand" />
 				<Group>
 					<CardScroll size="s" style={{ marginBottom: "-50px" }}>
@@ -186,11 +191,12 @@ class Home extends React.Component {
 					<SimpleCell onClick={go} data-to="mems" expandable before={<Icon28MasksOutline />}>Мемы</SimpleCell>
 					<SimpleCell onClick={go} data-to="screenshots" expandable before={<Icon28FaceRecognitionOutline />}>Скриншоты персонажей</SimpleCell>
 					<SimpleCell onClick={go} data-to="arts" expandable before={<Icon28PictureStackOutline />}>Арты</SimpleCell>
-					<SimpleCell onClick={go} data-to="history" expandable before={<Icon28HistoryBackwardOutline />}>История аркад</SimpleCell>
+				</Group>
+				<Group header={<Header mode="secondary">Аркады и описание приложения</Header>}>
+					<SimpleCell onClick={go} data-to="randomgg" expandable before={<Icon28HistoryBackwardOutline />}>История аркад</SimpleCell>
 					{this.state.subscribed
 					? <SimpleCell onClick={this.unsubscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>
 					: <SimpleCell onClick={this.subscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>}
-					<SimpleCell onClick={go} data-to="faq" expandable before={<Icon28HelpCircleOutline />}>Описание приложения</SimpleCell>
 				</Group>
 			    {this.state.text && <Group><Div>{this.state.text}</Div></Group>}
           		{this.state.snackbar}
