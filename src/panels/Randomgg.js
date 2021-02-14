@@ -40,7 +40,7 @@ class Randomgg extends React.Component {
 		return (
 		<Panel id={id} centered={true}>
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
-				Случаный ГГ
+				Случайный ГГ
 			</PanelHeader>
 			{this.state.name == null &&
 			<Group>
