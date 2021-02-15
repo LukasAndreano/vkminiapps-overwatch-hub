@@ -124,7 +124,7 @@ class Home extends React.Component {
 		return (
 			<Panel id={id}>
 				<PanelHeader left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
-        		<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-18").diff(moment().format(), "days") + " д."} asideMode="expand" />
+        		<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-19").diff(moment().format(), "days") + " д."} asideMode="expand" />
 				<Group>
 					<CardScroll size="s" style={{ marginBottom: "-50px" }}>
 			            <ContentCard

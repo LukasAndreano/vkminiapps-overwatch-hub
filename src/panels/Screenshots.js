@@ -45,27 +45,29 @@ class Screenshots extends React.Component {
 		});
     }
     changePage(page, group_id, group_name) {
-    	bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-    	this.setState({ activeTab: page, rows: null, spinner: true });
-		fetch('https://cloud.irbot.net/ow_arcade/request?method=wall.get&owner_id=-' + group_id + '&count=30')
-			.then(response => response.json())
-			.then(data => {
-				var rows = [];
-				for (var i = 0; i < 30; i++) {
-					if (data.posts.response.items[i].marked_as_ads == 0 && data.img[i]) {
-						rows.push(<ContentCard
-							image={data.img[i]}
-							text={data.posts.response.items[i].text}
-							caption={group_name}
-							disabled
-						/>);
-						rows.push(
-							<Button size="l" onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + group_id + "?w=wall-" + group_id + "_" + data.posts.response.items[i].id}>Перейти к публикации</Button>
-						);
+    	if (page !== this.state.activeTab) {
+	    	bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
+	    	this.setState({ activeTab: page, rows: null, spinner: true });
+			fetch('https://cloud.irbot.net/ow_arcade/request?method=wall.get&owner_id=-' + group_id + '&count=30')
+				.then(response => response.json())
+				.then(data => {
+					var rows = [];
+					for (var i = 0; i < 30; i++) {
+						if (data.posts.response.items[i].marked_as_ads == 0 && data.img[i]) {
+							rows.push(<ContentCard
+								image={data.img[i]}
+								text={data.posts.response.items[i].text}
+								caption={group_name}
+								disabled
+							/>);
+							rows.push(
+								<Button size="l" onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + group_id + "?w=wall-" + group_id + "_" + data.posts.response.items[i].id}>Перейти к публикации</Button>
+							);
+						}
 					}
-				}
-				this.setState({ rows: rows, spinner: false });
-			});
+					this.setState({ rows: rows, spinner: false });
+				});
+		}
     }
 	getWall(group_id, group_name) {
 		fetch('https://cloud.irbot.net/ow_arcade/request?method=wall.get&owner_id=-' + group_id + '&count=30')
