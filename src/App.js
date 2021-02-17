@@ -8,8 +8,6 @@ import {
 	ScreenSpinner,
 } from '@vkontakte/vkui';
 
-const request = require('sync-request');
-
 import OverwatchDailyArcadeIcon from './img/ow_arcade.jpg';
 
 import "./css/Index.css";
@@ -95,8 +93,6 @@ const App = () => {
 		fetchData();
 	}, []);
 
-	var result = JSON.parse(request('GET', 'https://cloud.irbot.net/ow_arcade/today').getBody('utf8'));
-
 	const go = e => {
 		setActivePanel(e.currentTarget.dataset.to);
 	};
@@ -131,7 +127,7 @@ const App = () => {
 
 	return (
 		<View activePanel={activePanel} popout={popout}>
-			<Home id={ROUTES.HOME} go={go} user={user} arcades={result} snackbarError={snackbar} />
+			<Home id={ROUTES.HOME} go={go} user={user} snackbarError={snackbar} />
 			<Intro id={ROUTES.INTRO} go={viewIntro} user={user} snackbarError={snackbar} />
 			<Update id={ROUTES.UPDATE} go={go} />
 			<FAQ id={ROUTES.FAQ} go={go} />

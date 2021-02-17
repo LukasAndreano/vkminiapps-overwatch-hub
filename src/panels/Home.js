@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
+import crypto from 'crypto';
 import moment from 'moment';
 import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
 import {
@@ -38,32 +39,79 @@ class Home extends React.Component {
 		super(props);
 		this.state = {
 			snackbar: null,
-			request: false,
+			arcades: [],
 			subscribed: false,
-			alert: false,
+			alert: null,
+			request: false,
+			changed: false,
 		};
-		this.subscribeme = this.subscribeme.bind(this);
-		this.unsubscribeme = this.unsubscribeme.bind(this);
 	}
 	verify() {
-		if (this.state.request === false) {
+		if (this.state.request == false) {
 			{this.props.user &&
-			fetch('https://cloud.irbot.net/ow_arcade/api?act=subscribed&key=atQ9fP8qbNZUZ5Qm&user_id='+this.props.user.id)
-				.then(response => response.json())
-				.then(data => {
-					if (data.subscribed == true) {
-						this.setState({ subscribed: data.subscribed, switch: <Switch defaultChecked />, request: true })
-					} else {
-						this.setState({ subscribed: data.subscribed, switch: <Switch />, request: true })
-					}
-				});
+				fetch('https://cloud.irbot.net/ow_arcade/api?act=subscribed&key=atQ9fP8qbNZUZ5Qm&user_id='+this.props.user.id)
+					.then(response => response.json())
+					.then(data => {
+						if (data.subscribed == true) {
+							this.setState({request: true, alert: <SimpleCell onClick={() => this.changeSubscribe(true)} before={<Icon28Notifications />} after={<Switch defaultChecked />}>Рассылка с аркадами</SimpleCell>});
+						} else {
+							this.setState({request: true, alert: <SimpleCell onClick={() => this.changeSubscribe(false)} before={<Icon28Notifications />} after={<Switch />}>Рассылка с аркадами</SimpleCell>});
+						}
+					});
+			}	
+		}
+	}
+	componentDidUpdate() {
+		if (this.state.changed == true) {
+			if (this.state.subscribed == true) {
+				this.setState({changed: false, alert: <SimpleCell onClick={() => this.changeSubscribe(true)} before={<Icon28Notifications />} after={<Switch defaultChecked />}>Рассылка с аркадами</SimpleCell>});
+			} else {
+				this.setState({changed: false, alert: <SimpleCell onClick={() => this.changeSubscribe(false)} before={<Icon28Notifications />} after={<Switch />}>Рассылка с аркадами</SimpleCell>});
 			}
 		}
 	}
-	subscribeme() {
+	componentDidMount() {
+		try	{
+			fetch('https://cloud.irbot.net/ow_arcade/api?act=arcades&key=atQ9fP8qbNZUZ5Qm')
+			.then(response => response.json())
+			.then(data => {
+				let arcades = [];
+				for (let b = 0; b < 7; b++) {
+					arcades.push(<ContentCard
+						image={data.result.arcades[b].img}
+						subtitle={"Аркада #" + (b+1)}
+						header={data.result.arcades[b].name}
+						caption={"Игроков: " + data.result.arcades[b].players}
+						disabled
+						key={crypto.randomBytes(20).toString('hex')}
+						style={{ marginBottom: "50px" }}
+					/>);
+				}
+			this.setState({arcades: arcades});
+		});
+		} catch (err) {
+			console.log(err);
+		}
+	}
+	changeSubscribe(subscribed) {
 		let {user} = this.props;
-		if (this.state.alert == false) {
-			this.setState({switch: <Switch defaultChecked />, alert: true});
+		if (subscribed == true) {
+			{user &&
+				fetch('https://cloud.irbot.net/ow_arcade/api?act=unsubscribe&key=atQ9fP8qbNZUZ5Qm&user_id='+user.id)
+					.then(response => response.json())
+					.then(data => {
+						bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
+						this.setState({subscribed: false, changed: true, snackbar:
+							<Snackbar
+								onClose={() => this.setState({ snackbar: null })}
+								before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
+							>
+								Рассылка отключена
+							</Snackbar>
+						});
+					})
+				}
+		} else {
 			{user &&
 				bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 197332265})
 				.then(data => {
@@ -71,10 +119,9 @@ class Home extends React.Component {
 						.then(response => response.json())
 						.then(data => {
 							bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-							this.setState({ subscribed: data.subscribed });
-							this.setState({snackbar:
+							this.setState({subscribed: true, changed: true, snackbar:
 								<Snackbar
-								    onClose={() => this.setState({ snackbar: null, alert: false })}
+								    onClose={() => this.setState({ snackbar: null  })}
 								    before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
 								>
 								    Рассылка активирована
@@ -82,106 +129,19 @@ class Home extends React.Component {
 							});
 						});
 				})
-				.catch(error => {
-					bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
-					this.setState({subscribed: false, switch: <Switch />, alert: false});
-					this.setState({snackbar:
-					    <Snackbar
-					      onClose={() => this.setState({ snackbar: null })}
-					      before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
-					    >
-					    	Подписка на рассылку отменена
-					    </Snackbar>
-					});
-				});
 			}
-		}
-	}
-	unsubscribeme() {
-		this.setState({switch: <Switch />});
-		let {user} = this.props;
-		{user &&
-		fetch('https://cloud.irbot.net/ow_arcade/api?act=unsubscribe&key=atQ9fP8qbNZUZ5Qm&user_id='+user.id)
-			.then(response => response.json())
-			.then(data => {
-				bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-				this.setState({ subscribed: false });
-				this.setState({snackbar:
-					<Snackbar
-					    onClose={() => this.setState({ snackbar: null })}
-					    before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
-					>
-					    Рассылка отключена
-					</Snackbar>
-				});
-			})
 		}
 	}
 	render() {
 		this.verify();
-		let {id, go, arcades, snackbarError} = this.props;
+		let {id, go, snackbarError} = this.props;
 		return (
 			<Panel id={id}>
 				<PanelHeader left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
         		<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-19").diff(moment().format(), "days") + " д."} asideMode="expand" />
 				<Group>
 					<CardScroll size="s" style={{ marginBottom: "-50px" }}>
-			            <ContentCard
-			              image={arcades.result.arcade1.img}
-			              subtitle="Аркада #1"
-			              header={arcades.result.arcade1.name}
-			              caption={"Игроков: " + arcades.result.arcade1.players}
-			              disabled
-			              style={{ marginBottom: "50px" }}
-			            />
-			            <ContentCard
-			              image={arcades.result.arcade2.img}
-			              subtitle="Аркада #2"
-			              header={arcades.result.arcade2.name}
-			              caption={"Игроков: " + arcades.result.arcade2.players}
-			              disabled
-			              style={{ marginBottom: "50px" }}
-			            />
-			            <ContentCard
-			              image={arcades.result.arcade3.img}
-			              subtitle="Аркада #3"
-			              header={arcades.result.arcade3.name}
-			              caption={"Игроков: " + arcades.result.arcade3.players}
-			              disabled
-			              style={{ marginBottom: "50px" }}
-			            />
-			            <ContentCard
-			              image={arcades.result.arcade4.img}
-			              subtitle="Аркада #4"
-			              header={arcades.result.arcade4.name}
-			              caption={"Игроков: " + arcades.result.arcade4.players}
-			              disabled
-			              style={{ marginBottom: "50px" }}
-			            />
-			            <ContentCard
-			              image={arcades.result.arcade5.img}
-			              subtitle="Аркада #5"
-			              header={arcades.result.arcade5.name}
-			              caption={"Игроков: " + arcades.result.arcade5.players}
-			              disabled
-			              style={{ marginBottom: "50px" }}
-			            />
-			            <ContentCard
-			              image={arcades.result.arcade6.img}
-			              subtitle="Аркада #6"
-			              header={arcades.result.arcade6.name}
-			              caption={"Игроков: " + arcades.result.arcade6.players}
-			              disabled
-			              style={{ marginBottom: "50px" }}
-			            />
-			            <ContentCard
-			              image={arcades.result.arcade7.img}
-			              subtitle="Аркада #7"
-			              header={arcades.result.arcade7.name}
-			              caption={"Игроков: " + arcades.result.arcade7.players}
-			              disabled
-			              style={{ marginBottom: "50px" }}
-			            />
+			            {this.state.arcades}
 					</CardScroll>
 				</Group>
 				<Group header={<Header mode="secondary">Приветствуем, герой!</Header>}>
@@ -196,9 +156,7 @@ class Home extends React.Component {
 				</Group>
 				<Group header={<Header mode="secondary">Аркады и описание приложения</Header>}>
 					<SimpleCell onClick={go} data-to="history" expandable before={<Icon28HistoryBackwardOutline />}>История аркад</SimpleCell>
-					{this.state.subscribed
-					? <SimpleCell onClick={this.unsubscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>
-					: <SimpleCell onClick={this.subscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>}
+					{this.state.alert}
 				</Group>
           		{this.state.snackbar}
           		{snackbarError}
