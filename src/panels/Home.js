@@ -37,7 +37,6 @@ class Home extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			text: '',
 			snackbar: null,
 			request: false,
 			subscribed: false,
@@ -53,7 +52,7 @@ class Home extends React.Component {
 				.then(response => response.json())
 				.then(data => {
 					if (data.subscribed == true) {
-						this.setState({ subscribed: data.subscribed, switch: <Switch checked />, request: true })
+						this.setState({ subscribed: data.subscribed, switch: <Switch defaultChecked />, request: true })
 					} else {
 						this.setState({ subscribed: data.subscribed, switch: <Switch />, request: true })
 					}
@@ -64,7 +63,7 @@ class Home extends React.Component {
 	subscribeme() {
 		let {user} = this.props;
 		if (this.state.alert == false) {
-			this.setState({switch: <Switch checked />, alert: true});
+			this.setState({switch: <Switch defaultChecked />, alert: true});
 			{user &&
 				bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 197332265})
 				.then(data => {
@@ -201,7 +200,6 @@ class Home extends React.Component {
 					? <SimpleCell onClick={this.unsubscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>
 					: <SimpleCell onClick={this.subscribeme} before={<Icon28Notifications />} after={this.state.switch}>Рассылка с аркадами</SimpleCell>}
 				</Group>
-			    {this.state.text && <Group><Div>{this.state.text}</Div></Group>}
           		{this.state.snackbar}
           		{snackbarError}
 			</Panel>

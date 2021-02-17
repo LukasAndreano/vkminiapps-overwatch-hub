@@ -20,7 +20,6 @@ class FAQ extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			text: '',
 			snackbar: null,
 		};
 		this.addtogroup = this.addtogroup.bind(this);
@@ -63,31 +62,31 @@ class FAQ extends React.Component {
 		              subtitle="СВЯЗЬ С ACTIVISION BLIZZARD"
 		              header="Информация про приложение"
 		              text="Overwatch Daily Arcade не является официальным приложением и никаким образом не связан с Activision Blizzard."
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО СПИСОК АРКАД"
 		              header="Список аркад"
 		              text="Список аркад в приложении обновляется ежедневно в 07:00 по МСК."
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО ОБНОВЛЕНИЕ"
 		              header="Лунный новый год"
 		              text="Во вкладке 'Лунный новый год' перечислены только скины. Граффити, иконки, анимации лучшего момента матча не входят в этот раздел."
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО РАССЫЛКУ"
 		              header="Рассылка"
 		              text="При активации функции 'Рассылка с аркадами' мы добавляем ваш аккаунт в список ежедневной автоматизированной рассылки. Чтобы отписаться от нее, переключите тумблер или откройте сообщения с нашим сообществом, где будет кнопка 'Отключить уведомления'."
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО ПРИЛОЖЕНИЕ"
 		              header="Приложение"
-		              text="Текущая версия приложения: 1.0.7. Разработчик: Никита Балин"
-		              maxHeight={200}
+		              text="Текущая версия приложения: 1.0.8. Разработчик: Никита Балин"
+		              maxheight={200}
 		            />
 		        </CardGrid>
 			    <Div>
@@ -96,7 +95,6 @@ class FAQ extends React.Component {
 			</Group>
 			<CellButton onClick={this.addtogroup} centered before={<Icon28AddCircleOutline />}>Добавить нас к себе в группу</CellButton>
 			<Group></Group>
-			{this.state.text && <Group><Div>{this.state.text}</Div></Group>}
           	{this.state.snackbar}
 		</Panel>
 		)

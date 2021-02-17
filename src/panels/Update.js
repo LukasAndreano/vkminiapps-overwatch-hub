@@ -51,7 +51,7 @@ class Update extends React.Component {
 		              header="Скин за первую неделю испытаний!"
 		              text="Одерживайте победы в «Быстрой игре», «Соревновательной игре» или «Аркаде», чтобы получить «Терракотовый медик» для Батиста. Для получения необходимо совершить 9 побед."
 		              caption="Этот скин невозможно приобрести за монеты."
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              image={Mccree}
@@ -59,7 +59,7 @@ class Update extends React.Component {
 		              header="Скин за вторую неделю испытаний!"
 		              text="Одерживайте победы в «Быстрой игре», «Соревновательной игре» или «Аркаде», чтобы получить «Сякэ» для Маккри. Для получения необходимо совершить 9 побед."
 		              caption="Этот скин невозможно приобрести за монеты."
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              image={Reaper}
@@ -67,7 +67,7 @@ class Update extends React.Component {
 		              header="Скин за третью неделю испытаний!"
 		              text="Одерживайте победы в «Быстрой игре», «Соревновательной игре» или «Аркаде», чтобы получить «Гвардеец императора» для Жнеца. Для получения необходимо совершить 9 побед."
 		              caption="Этот скин невозможно приобрести за монеты."
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		        </CardScroll>
 			</Group>
@@ -79,7 +79,7 @@ class Update extends React.Component {
 		              header="Скин «Пламя Дракона» для Бастиона"
 		              text="Этот скин можно получить из контейнера или приобрести за внутриигровую валюту."
 		              caption="Стоимость: 3000 монет"
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              image={Ashe}
@@ -87,7 +87,7 @@ class Update extends React.Component {
 		              header="Скин «Охотница на тигров» для Эш"
 		              text="Этот скин можно получить из контейнера или приобрести за внутриигровую валюту."
 		              caption="Стоимость: 3000 монет"
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              image={Echo}
@@ -95,7 +95,7 @@ class Update extends React.Component {
 		              header="Скин «Ккачхи» для Эхо"
 		              text="Этот скин можно получить из контейнера или приобрести за внутриигровую валюту."
 		              caption="Стоимость: 3000 монет"
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              image={Orisa}
@@ -103,7 +103,7 @@ class Update extends React.Component {
 		              header="Скин «Дух быка» для Орисы"
 		              text="Этот скин можно получить из контейнера или приобрести за внутриигровую валюту."
 		              caption="Стоимость: 3000 монет"
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              image={Widow}
@@ -111,7 +111,7 @@ class Update extends React.Component {
 		              header="Скин «Белая змея» для Роковой вдовы"
 		              text="Этот скин можно получить из контейнера или приобрести за внутриигровую валюту."
 		              caption="Стоимость: 3000 монет"
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		        </CardScroll>
 			</Group>
@@ -123,7 +123,7 @@ class Update extends React.Component {
 		              header="Поза для Бригитты"
 		              text="Эту позу можно получить из контейнера или приобрести за внутриигровую валюту."
 		              caption="Стоимость: 750 монет"
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              image={Pose2}
@@ -131,7 +131,7 @@ class Update extends React.Component {
 		              header="Поза для Мойры"
 		              text="Эту позу можно получить из контейнера или приобрести за внутриигровую валюту."
 		              caption="Стоимость: 750 монет"
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		            <ContentCard
 		              image={Pose3}
@@ -139,7 +139,7 @@ class Update extends React.Component {
 		              header="Поза для Солдата-76"
 		              text="Эту позу можно получить из контейнера или приобрести за внутриигровую валюту."
 		              caption="Стоимость: 750 монет"
-		              maxHeight={200}
+		              maxheight={200}
 		            />
 		        </CardScroll>
 			</Group>

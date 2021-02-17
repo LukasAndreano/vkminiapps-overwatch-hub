@@ -23,42 +23,35 @@ class History extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			text: '',
 			snackbar: null,
-			request: false,
 			wall: {
 				img1: null,
 				img2: null,
 				img3: null,
-				img4: null,
-				img5: null,
-				img6: null,
-				img7: null,
 			},
 		};
 	}
-	getWall() {
-		if (this.state.request === false) {
-			this.setState({ request: true });
-			bridge.send("VKWebAppCallAPIMethod", {"method": "wall.get", "params": {"count": "7", "offset": "1", "owner_id": "-197332265", "v":"5.126", "access_token":"6e1c099a6e1c099a6e1c099a0d6e69de1166e1c6e1c099a31e5668f51c802fa62b5057e"}})
-			.then(data => {
-				this.setState({wall: {img1: data.response.items[0].attachments[0].photo.sizes[2].url, img2: data.response.items[1].attachments[0].photo.sizes[2].url, img3: data.response.items[2].attachments[0].photo.sizes[2].url}})
-			})
-			.catch(error => {
-				bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
-				this.setState({snackbar:
-				    <Snackbar
-				      onClose={() => this.setState({ snackbar: null })}
-				      before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
-				    >
-				    	Не удалось загрузить историю аркад
-				    </Snackbar>
-				});
-			});	
-		}
+	componentDidMount() {
+		bridge.send("VKWebAppCallAPIMethod", {"method": "wall.get", "params": {"count": "3", "offset": "1", "owner_id": "-197332265", "v":"5.130", "access_token":"6e1c099a6e1c099a6e1c099a0d6e69de1166e1c6e1c099a31e5668f51c802fa62b5057e"}})
+		.then(data => {
+			this.setState({wall: {img1: data.response.items[0].attachments[0].photo.sizes[2].url, img2: data.response.items[1].attachments[0].photo.sizes[2].url, img3: data.response.items[2].attachments[0].photo.sizes[2].url}})
+		})
+		.catch(error => {
+			bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
+			this.setState({snackbar:
+				<Snackbar
+				  onClose={() => this.setState({ snackbar: null })}
+				  before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
+				>
+					Не удалось загрузить историю аркад
+				</Snackbar>
+			});
+		});	
+	}
+	componentWillUnmount() {
+		this.setState({wall: {img1: null, img2: null, img3: null}});
 	}
 	render() {
-		this.getWall();
 		let {id, go} = this.props;
 		return (
 		<Panel id={id}>
@@ -98,7 +91,6 @@ class History extends React.Component {
 		    <Div>
 		      <Button size="l" stretched mode="secondary" href="https://vk.com/ow.arcade">Перейти в сообщество</Button>
 		    </Div>
-			{this.state.text && <Group><Div>{this.state.text}</Div></Group>}
           	{this.state.snackbar}
 		</Panel>
 		)

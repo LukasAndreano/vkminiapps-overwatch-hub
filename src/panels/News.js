@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
+import crypto from 'crypto';
 import {
 	Panel,
 	PanelHeader,
@@ -23,11 +24,16 @@ class News extends React.Component {
     constructor (props) {
       super(props);
       this.state = {
-		text: '',
 		snackbar: null,
-		request: false,
 		spinner: true,
-		rows: [],
+		groups: [
+			{
+				id: '140691640',
+				name: 'Overwatch School',
+				rows: [],
+			},
+		],
+        activeTab: 'tab1',
       }
       this.OpenPost = this.OpenPost.bind(this);
     }
@@ -42,33 +48,43 @@ class News extends React.Component {
 			</Snackbar>
 		});
     }
-	getWall(group_id, group_name) {
-		if (this.state.request === false) {
-			this.setState({ request: true });
-		fetch('https://cloud.irbot.net/ow_arcade/request?method=wall.get&owner_id=-' + group_id + '&count=100')
-			.then(response => response.json())
+	componentDidMount() {
+		for	(let b = 0; b < this.state.groups.length; b++) {
+			bridge.send("VKWebAppCallAPIMethod", {"method": "wall.get", "params": {"owner_id": "-" + this.state.groups[b].id, "count": 100, "offset": 1, "v":"5.130", "access_token":"6e1c099a6e1c099a6e1c099a0d6e69de1166e1c6e1c099a31e5668f51c802fa62b5057e"}})
 			.then(data => {
-				var rows = [];
-				for (var i = 0; i < 100; i++) {
-					if (data.posts.response.items[i].marked_as_ads == 0 && data.posts.response.items[i].text.search('#news@overwatchschool') != -1) {
-						rows.push(<ContentCard
-							image={data.img[i]}
-							text={data.posts.response.items[i].text}
-							caption={group_name}
-							disabled
-						/>);
-						rows.push(
-							<Button size="l" onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + group_id + "?w=wall-" + group_id + "_" + data.posts.response.items[i].id}>Перейти к публикации</Button>
-						);
+					let rows = [];
+					for (var i = 0; i < 100; i++) {
+						try {
+							if (data.response.items[i].marked_as_ads == 0 && data.response.items[i].attachments[0].photo && data.response.items[i].text.search('#news@overwatchschool') !== -1) {
+								rows.push(<ContentCard
+									image={data.response.items[i].attachments[0].photo.sizes.pop().url}
+									text={data.response.items[i].text}
+									caption={this.state.groups[b].name}
+									key={crypto.randomBytes(20).toString('hex')}
+									disabled
+								/>);
+								rows.push(
+									<Button size="l" key={crypto.randomBytes(20).toString('hex')} onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + this.state.groups[b].id + "?w=wall-" + this.state.groups[b].id + "_" + data.response.items[i].id}>Перейти к публикации</Button>
+								);
+							}
+						} catch (err) {
+							console.log(err);
+						}
 					}
-				}
-				this.setState({ rows: rows, spinner: false });
+					this.state.groups[b].rows = rows;
+					this.setState(this.state.groups[b].rows);
 			});
+		}
+		this.setState({ spinner: false });
+	}
+	componentWillUnmount() {
+		for	(let b = 0; b < this.state.groups.length; b++) {
+			this.state.groups[b].rows = null;
+			this.setState(this.state.groups[b].rows);
 		}
 	}
 	render() {
 		let {id, go} = this.props;
-		this.getWall('140691640', 'Overwatch School');
 		return (
 		<Panel id={id}>
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
@@ -85,10 +101,9 @@ class News extends React.Component {
 			</Div>
 			<Group>
 				<CardGrid size="l">
-					{this.state.rows}
+					{this.state.activeTab === 'tab1' && this.state.groups[0].rows}
 				</CardGrid>
 			</Group>
-			{this.state.text && <Group><Div>{this.state.text}</Div></Group>}
           	{this.state.snackbar}
 		</Panel>
 		)

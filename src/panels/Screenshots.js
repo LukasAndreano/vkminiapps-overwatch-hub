@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
+import crypto from 'crypto';
 import {
 	Panel,
 	PanelHeader,
@@ -23,15 +24,23 @@ class Screenshots extends React.Component {
     constructor (props) {
       super(props);
       this.state = {
-		text: '',
 		snackbar: null,
-		rows: [],
-		request: false,
 		spinner: true,
-        activeTab: 'mercy',
+		groups: [
+			{
+				id: '166328226',
+				name: 'Скриншоты Мерки | Mercy Overwatch',
+				rows: [],
+			},
+			{
+				id: '194929460',
+				name: 'Скриншоты Симметры | Symmetra Overwatch',
+				rows: [],
+			},
+		],
+        activeTab: 'tab1',
       }
       this.OpenPost = this.OpenPost.bind(this);
-      this.getWall = this.getWall('166328226', 'Скриншоты Мерки | Mercy Overwatch');
     }
     OpenPost() {
     	bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
@@ -43,52 +52,41 @@ class Screenshots extends React.Component {
 			    Открываем публикацию...
 			</Snackbar>
 		});
-    }
-    changePage(page, group_id, group_name) {
-    	if (page !== this.state.activeTab) {
-	    	bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-	    	this.setState({ activeTab: page, rows: null, spinner: true });
-			fetch('https://cloud.irbot.net/ow_arcade/request?method=wall.get&owner_id=-' + group_id + '&count=30')
-				.then(response => response.json())
-				.then(data => {
-					var rows = [];
+	}
+	componentDidMount() {
+		for	(let b = 0; b < this.state.groups.length; b++) {
+			bridge.send("VKWebAppCallAPIMethod", {"method": "wall.get", "params": {"owner_id": "-" + this.state.groups[b].id, "count": 30, "offset": 1, "v":"5.130", "access_token":"6e1c099a6e1c099a6e1c099a0d6e69de1166e1c6e1c099a31e5668f51c802fa62b5057e"}})
+			.then(data => {
+					let rows = [];
 					for (var i = 0; i < 30; i++) {
-						if (data.posts.response.items[i].marked_as_ads == 0 && data.img[i]) {
-							rows.push(<ContentCard
-								image={data.img[i]}
-								text={data.posts.response.items[i].text}
-								caption={group_name}
-								disabled
-							/>);
-							rows.push(
-								<Button size="l" onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + group_id + "?w=wall-" + group_id + "_" + data.posts.response.items[i].id}>Перейти к публикации</Button>
-							);
+						try	{
+							if (data.response.items[i].marked_as_ads == 0 && data.response.items[i].attachments[0].photo && typeof data.response.items[i].attachments[0].photo.sizes.pop().url !== 'undefined') {
+								rows.push(<ContentCard
+									image={data.response.items[i].attachments[0].photo.sizes.pop().url}
+									text={data.response.items[i].text}
+									caption={this.state.groups[b].name}
+									key={crypto.randomBytes(20).toString('hex')}
+									disabled
+								/>);
+								rows.push(
+									<Button size="l" key={crypto.randomBytes(20).toString('hex')} onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + this.state.groups[b].id + "?w=wall-" + this.state.groups[b].id + "_" + data.response.items[i].id}>Перейти к публикации</Button>
+								);
+							}
+						} catch (err) {
+							console.log(err);
 						}
 					}
-					this.setState({ rows: rows, spinner: false });
-				});
-		}
-    }
-	getWall(group_id, group_name) {
-		fetch('https://cloud.irbot.net/ow_arcade/request?method=wall.get&owner_id=-' + group_id + '&count=30')
-			.then(response => response.json())
-			.then(data => {
-				var rows = [];
-				for (var i = 0; i < 30; i++) {
-					if (data.posts.response.items[i].marked_as_ads == 0 && data.img[i]) {
-						rows.push(<ContentCard
-							image={data.img[i]}
-							text={data.posts.response.items[i].text}
-							caption={group_name}
-							disabled
-						/>);
-						rows.push(
-							<Button size="l" onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + group_id + "?w=wall-" + group_id + "_" + data.posts.response.items[i].id}>Перейти к публикации</Button>
-						);
-					}
-				}
-				this.setState({ rows: rows, spinner: false });
+					this.state.groups[b].rows = rows;
+					this.setState(this.state.groups[b].rows);
 			});
+		}
+		this.setState({ spinner: false });
+	}
+	componentWillUnmount() {
+		for	(let b = 0; b < this.state.groups.length; b++) {
+			this.state.groups[b].rows = null;
+			this.setState(this.state.groups[b].rows);
+		}
 	}
 	render() {
 		let {id, go} = this.props;
@@ -100,20 +98,20 @@ class Screenshots extends React.Component {
 			{this.state.spinner === true && <ScreenSpinner size='large' />}
 	            <Tabs>
 	                <HorizontalScroll>
-	                  <TabsItem onClick={() => this.changePage('mercy', 166328226, 'Скриншоты Мерки | Mercy Overwatch')} selected={this.state.activeTab === 'mercy'}>
+	                  <TabsItem onClick={() => this.setState({activeTab: 'tab1'})} selected={this.state.activeTab === 'tab1'}>
 	                    Мерка
 	                  </TabsItem>
-	                  <TabsItem onClick={() => this.changePage('sym', 194929460, 'Скриншоты Симметры | Symmetra Overwatch')} selected={this.state.activeTab === 'sym'}>
+	                  <TabsItem onClick={() => this.setState({activeTab: 'tab2'})} selected={this.state.activeTab === 'tab2'}>
 	                    Симметра
 	                  </TabsItem>
 	                </HorizontalScroll>
 	            </Tabs>
 			<Group>
 				<CardGrid size="l">
-					{this.state.rows}
+					{this.state.activeTab === 'tab1' && this.state.groups[0].rows}
+					{this.state.activeTab === 'tab2' && this.state.groups[1].rows}
 				</CardGrid>
 			</Group>
-			{this.state.text && <Group><Div>{this.state.text}</Div></Group>}
           	{this.state.snackbar}
 		</Panel>
 		)
