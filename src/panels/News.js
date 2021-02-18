@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import crypto from 'crypto';
 import {
@@ -75,7 +75,9 @@ class News extends React.Component {
 					this.setState(this.state.groups[b].rows);
 			});
 		}
-		this.setState({ spinner: false });
+		if (this.state.rows != null) {
+			this.setState({ spinner: false });
+		}
 	}
 	componentWillUnmount() {
 		for	(let b = 0; b < this.state.groups.length; b++) {
@@ -90,7 +92,6 @@ class News extends React.Component {
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
 				Новости
 			</PanelHeader>
-			{this.state.spinner === true && <ScreenSpinner size='large' />}
 			<Div>
 				<Card>
 					<Div>
@@ -104,6 +105,7 @@ class News extends React.Component {
 					{this.state.activeTab === 'tab1' && this.state.groups[0].rows}
 				</CardGrid>
 			</Group>
+			{this.state.spinner === true && <ScreenSpinner size='large' />}
           	{this.state.snackbar}
 		</Panel>
 		)

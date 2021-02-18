@@ -15,7 +15,8 @@
   "devDependencies": {
     "cross-env": "^5.2.1",
     "react-hot-loader": "^4.13.0",
-    "react-scripts": "^4.0.1"
+    "react-scripts": "^4.0.1",
+    "uglify-js-brunch": "^2.10.0"
   },
   "dependencies": {
     "@paciolan/remote-component": "^2.11.0",

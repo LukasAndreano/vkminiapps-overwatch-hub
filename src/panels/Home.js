@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import crypto from 'crypto';
 import moment from 'moment';
 import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
 import {
 	Avatar,
-	Div,
-	Cell,
 	Group,
 	Header,
 	PanelHeader,
@@ -21,12 +19,10 @@ import {
 	ScreenSpinner
 } from '@vkontakte/vkui';
 import {
-	Icon28UsersOutline,
 	Icon28Notifications,
 	Icon28MoonOutline,
 	Icon28HelpCircleOutline,
 	Icon28HistoryBackwardOutline,
-	Icon28ArticleOutline,
 	Icon28FaceRecognitionOutline,
 	Icon28PictureStackOutline,
 	Icon28MasksOutline,
@@ -89,11 +85,13 @@ class Home extends React.Component {
 						style={{ marginBottom: "50px" }}
 					/>);
 				}
-			this.setState({arcades: arcades, spinner: false});
+			this.setState({arcades: arcades});
 		});
 		} catch (err) {
 			console.log(err);
 		}
+		// УБРАТЬ ЭТОТ НЕДОФИКС
+		setTimeout(() => { this.setState({spinner: false}); }, 600);
 	}
 	changeSubscribe(subscribed) {
 		let {user} = this.props;
@@ -139,30 +137,33 @@ class Home extends React.Component {
 		let {id, go, snackbarError} = this.props;
 		return (
 			<Panel id={id}>
-				<PanelHeader left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
-				<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-19").diff(moment().format(), "days") + " д."} asideMode="expand" />
-				<Group>
-					<CardScroll size="s" style={{ marginBottom: "-50px" }}>
-			            {this.state.arcades}
-					</CardScroll>
-				</Group>
-				<Group header={<Header mode="secondary">Приветствуем, герой!</Header>}>
-					<SimpleCell onClick={go} data-to="news" expandable before={<Icon28FireOutline />}>Новости</SimpleCell>
-					<SimpleCell onClick={go} data-to="update" expandable before={<Icon28MoonOutline />}>Лунный новый год</SimpleCell>
-					<SimpleCell onClick={go} data-to="mems" expandable before={<Icon28MasksOutline />}>Мемы</SimpleCell>
-					<SimpleCell onClick={go} data-to="screenshots" expandable before={<Icon28FaceRecognitionOutline />}>Скриншоты персонажей</SimpleCell>
-					<SimpleCell onClick={go} data-to="arts" expandable before={<Icon28PictureStackOutline />}>Арты</SimpleCell>
-				</Group>
-				<Group header={<Header mode="secondary">Развлечения</Header>}>
-					<SimpleCell onClick={go} data-to="randomgg" expandable before={<Icon28SparkleOutline />}>Случайный голдган</SimpleCell>
-				</Group>
-				<Group header={<Header mode="secondary">Аркады и описание приложения</Header>}>
-					<SimpleCell onClick={go} data-to="history" expandable before={<Icon28HistoryBackwardOutline />}>История аркад</SimpleCell>
-					{this.state.alert}
-				</Group>
+				{this.state.spinner === true && <ScreenSpinner size='large' />}
+				{this.state.spinner === false && 
+				<div>
+					<PanelHeader left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
+					<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-19").diff(moment().format(), "days") + " д."} asideMode="expand" />
+					<Group>
+						<CardScroll size="s" style={{ marginBottom: "-50px" }}>
+							{this.state.arcades}
+						</CardScroll>
+					</Group>
+					<Group header={<Header mode="secondary">Приветствуем, герой!</Header>}>
+						<SimpleCell onClick={go} data-to="news" expandable before={<Icon28FireOutline />}>Новости</SimpleCell>
+						<SimpleCell onClick={go} data-to="update" expandable before={<Icon28MoonOutline />}>Лунный новый год</SimpleCell>
+						<SimpleCell onClick={go} data-to="mems" expandable before={<Icon28MasksOutline />}>Мемы</SimpleCell>
+						<SimpleCell onClick={go} data-to="screenshots" expandable before={<Icon28FaceRecognitionOutline />}>Скриншоты персонажей</SimpleCell>
+						<SimpleCell onClick={go} data-to="arts" expandable before={<Icon28PictureStackOutline />}>Арты</SimpleCell>
+					</Group>
+					<Group header={<Header mode="secondary">Развлечения</Header>}>
+						<SimpleCell onClick={go} data-to="randomgg" expandable before={<Icon28SparkleOutline />}>Случайный голдган</SimpleCell>
+					</Group>
+					<Group header={<Header mode="secondary">Аркады и описание приложения</Header>}>
+						<SimpleCell onClick={go} data-to="history" expandable before={<Icon28HistoryBackwardOutline />}>История аркад</SimpleCell>
+						{this.state.alert}
+					</Group>
+				</div>}
           		{this.state.snackbar}
           		{snackbarError}
-				{this.state.spinner === true && <ScreenSpinner size='large' />}
 			</Panel>
 		)
 	}

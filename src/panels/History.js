@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import {
 	Panel,
@@ -15,6 +15,7 @@ import {
 	Div,
 	Card,
 	Title,
+	ScreenSpinner,
 } from '@vkontakte/vkui';
 
 import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
@@ -47,6 +48,9 @@ class History extends React.Component {
 				</Snackbar>
 			});
 		});	
+		if (this.state.wall != null) {
+			this.setState({ spinner: false });
+		}
 	}
 	componentWillUnmount() {
 		this.setState({wall: {img1: null, img2: null, img3: null}});
@@ -91,6 +95,7 @@ class History extends React.Component {
 		    <Div>
 		      <Button size="l" stretched mode="secondary" href="https://vk.com/ow.arcade">Перейти в сообщество</Button>
 		    </Div>
+			{this.state.spinner === true && <ScreenSpinner size='large' />}
           	{this.state.snackbar}
 		</Panel>
 		)

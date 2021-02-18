@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import bridge from '@vkontakte/vk-bridge';
+import React from 'react';
 import Confetti from 'react-confetti';
 import {
 	Panel,

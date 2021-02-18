@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
-import bridge from '@vkontakte/vk-bridge';
+import Confetti from 'react-confetti';
 import {
-	PanelHeader,
 	Panel,
 	Group,
 	Div,
@@ -20,6 +19,7 @@ const Intro = ({id, snackbarError, user, userHasSeenIntro, go}) => {
 			{(!userHasSeenIntro && user) && 
 				<Fragment>
 					<Group>
+						<Confetti width={window.innerWidth} height={window.innerHeight} numberOfPieces={25} />
 						<Div className="WelcomeBlock">
 							<Avatar src={OverwatchDailyArcadeIcon} size={64} />
 							<Title level="1" weight="bold" style={{ marginBottom: 16 }}>Добро пожаловать в Overwatch Hub, {user.first_name}!</Title>

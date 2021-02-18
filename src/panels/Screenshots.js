@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import crypto from 'crypto';
 import {
@@ -80,7 +80,9 @@ class Screenshots extends React.Component {
 					this.setState(this.state.groups[b].rows);
 			});
 		}
-		this.setState({ spinner: false });
+		if (this.state.groups[0].rows != null) {
+			this.setState({ spinner: false });
+		}
 	}
 	componentWillUnmount() {
 		for	(let b = 0; b < this.state.groups.length; b++) {
@@ -95,7 +97,6 @@ class Screenshots extends React.Component {
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
 				Скриншоты
 			</PanelHeader>
-			{this.state.spinner === true && <ScreenSpinner size='large' />}
 	            <Tabs>
 	                <HorizontalScroll>
 	                  <TabsItem onClick={() => this.setState({activeTab: 'tab1'})} selected={this.state.activeTab === 'tab1'}>
@@ -112,6 +113,7 @@ class Screenshots extends React.Component {
 					{this.state.activeTab === 'tab2' && this.state.groups[1].rows}
 				</CardGrid>
 			</Group>
+			{this.state.spinner === true && <ScreenSpinner size='large' />}
           	{this.state.snackbar}
 		</Panel>
 		)
