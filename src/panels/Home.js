@@ -17,7 +17,8 @@ import {
 	Switch,
 	CardScroll,
 	ContentCard,
-	PanelHeaderButton
+	PanelHeaderButton,
+	ScreenSpinner
 } from '@vkontakte/vkui';
 import {
 	Icon28UsersOutline,
@@ -42,6 +43,7 @@ class Home extends React.Component {
 			arcades: [],
 			subscribed: false,
 			alert: null,
+			spinner: true,
 			request: false,
 			changed: false,
 		};
@@ -87,7 +89,7 @@ class Home extends React.Component {
 						style={{ marginBottom: "50px" }}
 					/>);
 				}
-			this.setState({arcades: arcades});
+			this.setState({arcades: arcades, spinner: false});
 		});
 		} catch (err) {
 			console.log(err);
@@ -138,7 +140,7 @@ class Home extends React.Component {
 		return (
 			<Panel id={id}>
 				<PanelHeader left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
-        		<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-19").diff(moment().format(), "days") + " д."} asideMode="expand" />
+				<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось " + moment("2021-02-19").diff(moment().format(), "days") + " д."} asideMode="expand" />
 				<Group>
 					<CardScroll size="s" style={{ marginBottom: "-50px" }}>
 			            {this.state.arcades}
@@ -160,6 +162,7 @@ class Home extends React.Component {
 				</Group>
           		{this.state.snackbar}
           		{snackbarError}
+				{this.state.spinner === true && <ScreenSpinner size='large' />}
 			</Panel>
 		)
 	}
