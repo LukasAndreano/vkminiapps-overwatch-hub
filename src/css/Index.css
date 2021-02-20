@@ -13,9 +13,15 @@ a,a:hover,a:active {
 	text-decoration: none;
 	color: var(--text_primary);
 }
-.FixedLayout--android{
+.FixedLayout--android {
 	top: 0 !important;
 }
 .WelcomeBlock .Avatar {
 	padding-bottom: 20px;;
+}
+.Button--sz-l:hover {
+	color: var(--button_secondary_foreground) !important;
+}
+.PanelHeaderContext--opened  {
+	margin-top: 60px !important;
 }

@@ -133,11 +133,13 @@ class App extends React.Component {
 	go(e) {
 		const history = [...this.state.history];
 		history.push(e.currentTarget.dataset.to);
-		if (this.state.activePanel === 'home') {
-		  bridge.send('VKWebAppDisableSwipeBack');
+		if (e.currentTarget.dataset.to === 'home') {
+			bridge.send('VKWebAppDisableSwipeBack');
+			this.setState({ history: ['home'], activePanel: e.currentTarget.dataset.to });
+		} else {
+			this.setState({ history: history, activePanel: e.currentTarget.dataset.to });
 		}
 		document.body.style.overflow = "visible";
-		this.setState({ history: history, activePanel: e.currentTarget.dataset.to });
 	};
 
 	goBack = () => {
@@ -148,7 +150,7 @@ class App extends React.Component {
 		  bridge.send('VKWebAppEnableSwipeBack');
 		}
 		document.body.style.overflow = "visible";
-		this.setState({ history, activePanel });
+		this.setState({ history: history, activePanel });
 	}
 	
 	AndroidBackButton = () => {
