@@ -10,7 +10,7 @@ import {
 	CardGrid
 } from '@vkontakte/vkui';
 
-import Skin from '../img/mccree.jpg';
+import Skin from '../img/reaper.jpg';
 
 class Weeklyskin extends React.Component {
 	render() {
@@ -24,8 +24,9 @@ class Weeklyskin extends React.Component {
 				<CardGrid size="l">
 				    <ContentCard
 				        image={Skin}
+						disabled
 				        header="Скин за вторую неделю испытаний!"
-				        text="Одерживайте победы в «Быстрой игре», «Соревновательной игре» или «Аркаде», чтобы получить «Сякэ» для Маккри. Для получения необходимо совершить 9 побед."
+				        text="Одерживайте победы в «Быстрой игре», «Соревновательной игре» или «Аркаде», чтобы получить «Гвардеец императора» для Жнеца. Для получения необходимо совершить 9 побед."
 						caption="Этот скин невозможно приобрести за монеты."
 				        maxheight={200}
 				    />

@@ -5,19 +5,22 @@ import {
 	Panel,
 	PanelHeader,
 	PanelHeaderBack,
+	PanelHeaderContext,
+	PanelHeaderContent,
 	Group,
 	ContentCard,
 	Button,
 	CardGrid,
-	Tabs,
-	HorizontalScroll,
-	TabsItem,
+	List,
+	Cell,
 	Snackbar,
-	Avatar,
 	ScreenSpinner
 } from '@vkontakte/vkui';
 
-import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
+import {
+	Icon16Dropdown,
+	Icon24Done
+} from '@vkontakte/icons';
 
 class Arts extends React.Component {
     constructor (props) {
@@ -25,6 +28,8 @@ class Arts extends React.Component {
       this.state = {
 		snackbar: null,
 		spinner: true,
+		contextOpened: false,
+      	mode: 'tab1',
 		groups: [
 			{
 				id: '172205878',
@@ -47,21 +52,22 @@ class Arts extends React.Component {
 				rows: [],
 			},
 		],
-        activeTab: 'tab1',
       }
-      this.OpenPost = this.OpenPost.bind(this);
-    }
-    OpenPost() {
-    	bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-		this.setState({snackbar:
-			<Snackbar
-			    onClose={() => this.setState({ snackbar: null })}
-			    before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}
-			>
-			    Открываем публикацию...
-			</Snackbar>
-		});
-    }
+	  this.toggleContext = this.toggleContext.bind(this);
+	  this.select = this.select.bind(this);
+	}
+	toggleContext () {
+		if (this.state.contextOpened === false)
+			document.body.style.overflow = "hidden";
+		else 
+			document.body.style.overflow = "visible";
+		this.setState({ contextOpened: !this.state.contextOpened });
+	}
+	select(e) {
+		const mode = e.currentTarget.dataset.mode;
+		this.setState({ mode });
+		requestAnimationFrame(this.toggleContext);
+	}	
 	componentDidMount() {
 		for	(let b = 0; b < this.state.groups.length; b++) {
 			bridge.send("VKWebAppCallAPIMethod", {"method": "wall.get", "params": {"owner_id": "-" + this.state.groups[b].id, "count": 30, "offset": 1, "v":"5.130", "access_token":"6e1c099a6e1c099a6e1c099a0d6e69de1166e1c6e1c099a31e5668f51c802fa62b5057e"}})
@@ -70,15 +76,17 @@ class Arts extends React.Component {
 					for (var i = 0; i < 30; i++) {
 						try	{
 							if (data.response.items[i].marked_as_ads == 0 && data.response.items[i].attachments[0].photo && typeof data.response.items[i].attachments[0].photo.sizes.pop().url !== 'undefined') {
-								rows.push(<ContentCard
+								rows.push(<a rel="noopener noreferrer" target="_blank" href={"https://vk.com/club" + this.state.groups[b].id + "?w=wall-" + this.state.groups[b].id + "_" + data.response.items[i].id}>
+									<ContentCard
 									image={data.response.items[i].attachments[0].photo.sizes.pop().url}
 									text={data.response.items[i].text}
 									caption={this.state.groups[b].name}
 									key={crypto.randomBytes(20).toString('hex')}
 									disabled
-								/>);
+								/>
+								</a>);
 								rows.push(
-									<Button size="l" key={crypto.randomBytes(20).toString('hex')} onClick={this.OpenPost} style={{ marginTop: '10px', marginBottom: '20px' }} stretched mode="secondary" href={"https://vk.com/club" + this.state.groups[b].id + "?w=wall-" + this.state.groups[b].id + "_" + data.response.items[i].id}>Перейти к публикации</Button>
+									<Button size="l" key={crypto.randomBytes(20).toString('hex')} rel="noopener noreferrer" style={{ marginTop: '10px', marginBottom: '20px' }} target = "_blank" stretched mode="secondary" href={"https://vk.com/club" + this.state.groups[b].id + "?w=wall-" + this.state.groups[b].id + "_" + data.response.items[i].id}>Перейти к публикации</Button>
 								);
 							}
 						} catch (err) {
@@ -87,11 +95,18 @@ class Arts extends React.Component {
 					}
 					this.state.groups[b].rows = rows;
 					this.setState(this.state.groups[b].rows);
+			})
+			.catch(err => {
+				this.setState({snackbar:
+					<Snackbar
+						onClose={() => this.setState({ snackbar: null })}
+					>
+						Не удалось загрузить данные
+					</Snackbar>
+				});
 			});
 		}
-		if (this.state.groups[0].rows != null) {
-			this.setState({ spinner: false });
-		}
+		setTimeout(() => {this.setState({ spinner: false });}, 500);
 	}
 	componentWillUnmount() {
 		for	(let b = 0; b < this.state.groups.length; b++) {
@@ -104,33 +119,56 @@ class Arts extends React.Component {
 		return (
 		<Panel id={id}>
 			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
-				Арты
+				<PanelHeaderContent
+					aside={<Icon16Dropdown style={{ transform: `rotate(${this.state.contextOpened ? '180deg' : '0'})` }} />}
+					onClick={this.toggleContext}
+					>
+					Арты
+				</PanelHeaderContent>
 			</PanelHeader>
-	            <Tabs>
-	                <HorizontalScroll>
-					  <TabsItem onClick={() => this.setState({activeTab: 'tab1'})} selected={this.state.activeTab === 'tab1'}>
-	                   	SupportPain
-	                  </TabsItem>
-					  <TabsItem onClick={() => this.setState({activeTab: 'tab2'})} selected={this.state.activeTab === 'tab2'}>
-	                    random mercy
-	                  </TabsItem>
-					  <TabsItem onClick={() => this.setState({activeTab: 'tab3'})} selected={this.state.activeTab === 'tab3'}>
-	                    D.Va
-	                  </TabsItem>
-					  <TabsItem onClick={() => this.setState({activeTab: 'tab4'})} selected={this.state.activeTab === 'tab4'}>
-	                    Ковбой Маккри
-	                  </TabsItem>
-	                </HorizontalScroll>
-	            </Tabs>
-			<Group>
-				<CardGrid size="l">
-					{this.state.activeTab === 'tab1' && this.state.groups[0].rows}
-					{this.state.activeTab === 'tab2' && this.state.groups[1].rows}
-					{this.state.activeTab === 'tab3' && this.state.groups[2].rows}
-					{this.state.activeTab === 'tab4' && this.state.groups[3].rows}
-				</CardGrid>
-			</Group>
-			{this.state.spinner === true && <ScreenSpinner size='large' />}
+			<PanelHeaderContext opened={this.state.contextOpened} onClose={this.toggleContext}>
+                <List>
+                  <Cell
+                    after={this.state.mode === 'tab1' ? <Icon24Done fill="var(--accent)" /> : null}
+					onClick={this.select}
+                    data-mode="tab1"
+                  >
+                    SupportPain
+                  </Cell>
+                  <Cell
+                    after={this.state.mode === 'tab2' ? <Icon24Done fill="var(--accent)" /> : null}
+                    onClick={this.select}
+                    data-mode="tab2"
+                  >
+                    random mercy
+                  </Cell>
+                  <Cell
+                    after={this.state.mode === 'tab3' ? <Icon24Done fill="var(--accent)" /> : null}
+					onClick={this.select}
+                    data-mode="tab3"
+                  >
+                    D.Va
+                  </Cell>
+                  <Cell
+                    after={this.state.mode === 'tab4' ? <Icon24Done fill="var(--accent)" /> : null}
+                    onClick={this.select}
+                    data-mode="tab4"
+                  >
+                    Ковбой Маккри
+                  </Cell>
+                </List>
+              </PanelHeaderContext>
+			  {this.state.spinner === true && <ScreenSpinner size='large' />}
+			  {this.state.spinner === false &&
+			  <Group>
+					<CardGrid size="l">
+						{this.state.mode === 'tab1' && this.state.groups[0].rows}
+						{this.state.mode === 'tab2' && this.state.groups[1].rows}
+						{this.state.mode === 'tab3' && this.state.groups[2].rows}
+						{this.state.mode === 'tab4' && this.state.groups[3].rows}
+					</CardGrid>
+			  </Group>
+			  }
           	{this.state.snackbar}
 		</Panel>
 		)

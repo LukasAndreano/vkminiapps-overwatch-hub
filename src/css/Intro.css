@@ -5,9 +5,6 @@
 	justify-content: center;
 	flex-direction: column;
 }
-.WelcomeBlock .Title {
-	padding-top: 15px;
-}
 .WelcomeBlock .Text {
 	padding-bottom: 15px;
 }

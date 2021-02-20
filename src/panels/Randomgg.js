@@ -7,13 +7,9 @@ import {
 	Group,
 	Div,
 	Button,
-	Avatar,
 	Title,
 	Text,
 } from '@vkontakte/vkui';
-
-import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
-import Avatar1 from '../img/random1.png';
 
 import '../css/Intro.css';
 
@@ -37,14 +33,13 @@ class Randomgg extends React.Component {
 	render() {
 		let {id, go} = this.props;
 		return (
-		<Panel id={id} centered={true}>
-			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
+		<Panel id={id} centered={true} className="randomgg">
+			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>}>
 				Случайный ГГ
 			</PanelHeader>
 			{this.state.name == null &&
 			<Group>
 				<Div className="WelcomeBlock">
-					<Avatar src={OverwatchDailyArcadeIcon} size={64} />
 					<Title level="1" weight="bold" style={{ marginBottom: 16 }}>Случайный голдган</Title>
 					<Text weight="regular">Не знаешь на какого персонажа купить золотое оружие? Этот раздел отлично справляется с этой целью. Кликай на кнопку ниже!</Text>
 					<Button size="l" stretched mode="secondary" onClick={this.random}>Погнали!</Button>
@@ -54,7 +49,6 @@ class Randomgg extends React.Component {
 			<Group>
 				<Confetti width={window.innerWidth} height={window.innerHeight} numberOfPieces={50} />
 				<Div className="WelcomeBlock">
-					<Avatar src={Avatar1} size={64} />
 					<Title level="1" weight="bold" style={{ marginBottom: 16 }}>Покупай золотое оружие на {this.state.name}</Title>
 					<Text weight="regular">Рандомайзер принял своё решение. Однозначно нужно покупать золотое оружие на {this.state.name}!</Text>
 					<Button size="l" stretched mode="secondary" onClick={this.random}>Попробовать еще раз!</Button>

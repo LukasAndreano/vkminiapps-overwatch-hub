@@ -6,3 +6,16 @@
 	-ms-user-select: none;
 	user-select: none;
 }
+.UpdateBlock {
+	margin-bottom: 10px;
+}
+a,a:hover,a:active {
+	text-decoration: none;
+	color: var(--text_primary);
+}
+.FixedLayout--android{
+	top: 0 !important;
+}
+.WelcomeBlock .Avatar {
+	padding-bottom: 20px;;
+}

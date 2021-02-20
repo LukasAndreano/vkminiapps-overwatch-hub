@@ -60,37 +60,42 @@ class FAQ extends React.Component {
 				<CardGrid size="l">
 		            <ContentCard
 		              subtitle="СВЯЗЬ С ACTIVISION BLIZZARD"
+					  disabled
 		              header="Информация про приложение"
 		              text="Overwatch Daily Arcade не является официальным приложением и никаким образом не связан с Activision Blizzard."
 		              maxheight={200}
 		            />
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО СПИСОК АРКАД"
+					  disabled
 		              header="Список аркад"
 		              text="Список аркад в приложении обновляется ежедневно в 07:00 по МСК."
 		              maxheight={200}
 		            />
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО ОБНОВЛЕНИЕ"
+					  disabled
 		              header="Лунный новый год"
-		              text="Во вкладке 'Лунный новый год' перечислены только скины. Граффити, иконки, анимации лучшего момента матча не входят в этот раздел."
+		              text="Во вкладке 'Лунный Новый год' перечислены только скины. Граффити, иконки, анимации лучшего момента матча не входят в этот раздел."
 		              maxheight={200}
 		            />
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО РАССЫЛКУ"
+					  disabled
 		              header="Рассылка"
 		              text="При активации функции 'Рассылка с аркадами' мы добавляем ваш аккаунт в список ежедневной автоматизированной рассылки. Чтобы отписаться от нее, переключите тумблер или откройте сообщения с нашим сообществом, где будет кнопка 'Отключить уведомления'."
 		              maxheight={200}
 		            />
 		            <ContentCard
 		              subtitle="ИНФОРМАЦИЯ ПРО ПРИЛОЖЕНИЕ"
+					  disabled
 		              header="Приложение"
-		              text="Текущая версия приложения: 1.0.8. Разработчик: Никита Балин"
+		              text="Текущая версия приложения: 1.1.0. Разработчик: Никита Балин"
 		              maxheight={200}
 		            />
 		        </CardGrid>
 			    <Div>
-			      <Button size="l" stretched mode="secondary" href="https://vk.com/ow.arcade">Открыть наше сообщество</Button>
+			      <Button size="l" stretched mode="secondary" href="https://vk.com/ow.arcade" target = "_blank">Открыть наше сообщество</Button>
 			    </Div>
 			</Group>
 			<CellButton onClick={this.addtogroup} centered before={<Icon28AddCircleOutline />}>Добавить нас к себе в группу</CellButton>
