@@ -54,8 +54,10 @@ class Screenshots extends React.Component {
 		this.setState({ contextOpened: !this.state.contextOpened });
 	}
 	select (e) {
+		window.scroll({ top: 0, left: 0, behavior: 'smooth' });
 		const mode = e.currentTarget.dataset.mode;
 		this.setState({ mode });
+		requestAnimationFrame(this.toggleContext);
 	}	
 	componentDidMount() {
 		for	(let b = 0; b < this.state.groups.length; b++) {

@@ -22,6 +22,12 @@ a,a:hover,a:active {
 .Button--sz-l:hover {
 	color: var(--button_secondary_foreground) !important;
 }
-.PanelHeaderContext--opened  {
+.Tappable--android .SimpleCell--android .PanelHeaderContext--opened  {
 	margin-top: 60px !important;
+}
+.Div .SimpleCell {
+	border-radius: 15px;
+}
+.Epic .Tabbar {
+	z-index: 2;
 }

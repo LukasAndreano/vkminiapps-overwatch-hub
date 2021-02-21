@@ -39,7 +39,8 @@
     "react": "^16.14.0",
     "react-confetti": "^6.0.0",
     "react-dom": "^16.14.0",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "smoothscroll-polyfill": "^0.4.4"
   },
   "browserslist": {
     "production": [

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
+import smoothscroll from 'smoothscroll-polyfill';
 import crypto from 'crypto';
 import '@vkontakte/vkui/dist/vkui.css';
 import {
@@ -41,6 +42,8 @@ const STORAGE_KEYS = {
 	STATUS: 'status',
 }
 
+smoothscroll.polyfill();
+
 class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -51,12 +54,23 @@ class App extends React.Component {
 			snackbar: null,
 			arcades: null,
 			history: ['home'],
-			lastAndroidBackAction: 0,
+			// scroll[0] - home screen, news tab | scroll[1] - home screen, arcades tab
+			scrolls: [
+				{scroll: 0},
+				{scroll: 0},
+			],
+			arcadesHistory: {
+				img1: null,
+				img2: null,
+				img3: null,
+			},
 		};
 		this.go = this.go.bind(this);
 		this.goBack = this.goBack.bind(this);
 		this.viewIntro = this.viewIntro.bind(this);
 		this.AndroidBackButton = this.AndroidBackButton.bind(this);
+		this.saveScroll = this.saveScroll.bind(this);
+		this.getScroll = this.getScroll.bind(this);
 	}
 
 	componentDidMount() {
@@ -84,11 +98,8 @@ class App extends React.Component {
 			.then(response => response.json())
 			.then(data => {
 				let arcades = [];
-				for (let b = 0; b < 7; b++) {
+				for (let b = 0; b < 3; b++) {
 					let caption = null;
-					if (data.result.arcades[b].players !== '-') {
-						caption = "Игроков: " + data.result.arcades[b].players;
-					}
 					arcades.push(<ContentCard
 						image={data.result.arcades[b].img}
 						subtitle={"Аркада #" + (b+1)}
@@ -106,7 +117,22 @@ class App extends React.Component {
 				layout='vertical'
 				onClose={() => this.setState({snackbar: null})}
 				before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}>
-				Упс, что-то пошло не так...
+				Не удалось загрузить список аркад
+			</Snackbar>})
+		}
+
+		try	{
+			fetch('https://cloud.irbot.net/ow_arcade/api?act=getPosts&key=atQ9fP8qbNZUZ5Qm')
+			.then(response => response.json())
+			.then(data => {
+				this.setState({arcadesHistory: {img1: data.result.post0, img2: data.result.post1, img3: data.result.post2}});
+			});	
+		} catch(err) {
+			this.setState({snackbar: <Snackbar
+				layout='vertical'
+				onClose={() => this.setState({snackbar: null})}
+				before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}>
+				Не удалось загрузить историю аркад
 			</Snackbar>})
 		}
 
@@ -161,12 +187,20 @@ class App extends React.Component {
 		}
 	}
 
+	saveScroll(id, scroll) {
+		this.state.scrolls[id].scroll = scroll;
+	}
+
+	getScroll(id) {
+		return this.state.scrolls[id].scroll;
+	}
+
 	render() {
 		history.pushState(null, null);
 		return (
 			<ConfigProvider isWebView={true}>
 				<View activePanel={this.state.activePanel} popout={this.state.popout} onSwipeBack={this.goBack} history={this.state.history}>
-					<Home id={ROUTES.HOME} go={this.go} arcades={this.state.arcades} user={this.state.user} snackbarError={this.state.snackbar} />
+					<Home id={ROUTES.HOME} go={this.go} arcadesHistory={this.state.arcadesHistory} saveScroll={this.saveScroll} getScroll={this.getScroll} arcades={this.state.arcades} user={this.state.user} snackbarError={this.state.snackbar} />
 					<Intro id={ROUTES.INTRO} go={this.viewIntro} user={this.state.user} snackbarError={this.state.snackbar} />
 					<Update id={ROUTES.UPDATE} go={this.go} />
 					<FAQ id={ROUTES.FAQ} go={this.go} />

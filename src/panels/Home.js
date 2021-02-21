@@ -17,6 +17,7 @@ import {
 	Title,
 	Text,
 	CardScroll,
+	PromoBanner,
 	PanelHeaderButton,
 	ContentCard,
 	Button,
@@ -56,12 +57,7 @@ class Home extends React.Component {
 					name: 'Overwatch School',
 					rows: [],
 				},
-			],
-			wall: {
-				img1: null,
-				img2: null,
-				img3: null,
-			},
+			]
 		};
 		this.openPage = this.openPage.bind(this);
 	}
@@ -126,26 +122,12 @@ class Home extends React.Component {
 				});
 			});
 		}
-		bridge.send("VKWebAppCallAPIMethod", {"method": "wall.get", "params": {"count": "3", "offset": "1", "owner_id": "-197332265", "v":"5.130", "access_token":"6e1c099a6e1c099a6e1c099a0d6e69de1166e1c6e1c099a31e5668f51c802fa62b5057e"}})
-		.then(data => {
-			this.setState({wall: {img1: data.response.items[0].attachments[0].photo.sizes[4].url, img2: data.response.items[1].attachments[0].photo.sizes[4].url, img3: data.response.items[2].attachments[0].photo.sizes[6].url}})
-		})
-		.catch(error => {
-			this.setState({snackbar:
-				<Snackbar
-				  onClose={() => this.setState({ snackbar: null })}
-				>
-					Не удалось загрузить данные
-				</Snackbar>
-			});
-		});	
 	}
 	componentWillUnmount() {
 		for	(let b = 0; b < this.state.groups.length; b++) {
 			this.state.groups[b].rows = null;
 			this.setState(this.state.groups[b].rows);
 		}
-		this.setState({wall: {img1: null, img2: null, img3: null}});
 	}
 	changeSubscribe(subscribed) {
 		let {user} = this.props;
@@ -199,11 +181,34 @@ class Home extends React.Component {
 		}
 	}
 	openPage(e) {
+		let scroll;
+		switch (this.state.activeStory) {
+			case 'feed': 
+				if (window.scrollY !== 0)
+					this.props.saveScroll(0, window.scrollY);
+			break;
+			case 'arcades': 
+				if (window.scrollY !== 0)
+					this.props.saveScroll(1, window.scrollY);
+			break;
+		}
+		switch (e.currentTarget.dataset.story) {
+			case 'feed':
+				scroll = this.props.getScroll(0);
+				if (scroll !== 0)
+					setTimeout(() => {window.scroll({ top: scroll, left: 0, behavior: 'smooth' });}, 100);
+			break;
+			case 'arcades':
+				scroll = this.props.getScroll(1);
+				if (scroll !== 0)
+					setTimeout(() => {window.scroll({ top: scroll, left: 0, behavior: 'smooth' });}, 100);
+			break;
+		}
 		this.setState({activeStory: e.currentTarget.dataset.story});
 	}
 	render() {
 		this.verify();
-		let {id, go, user, snackbarError} = this.props;
+		let {id, go, snackbarError} = this.props;
 		return (
 			<Panel id={id}>
 			<Epic activeStory={this.state.activeStory} tabbar={
@@ -245,18 +250,13 @@ class Home extends React.Component {
 				</Panel>
 				<Panel id="menu" activeStory="menu">
 					<PanelHeader separator={false} left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
-					<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось: " + moment("2021-02-26").diff(moment().format(), "days") + " д."} asideMode="expand" />
 					<Group>
+					<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца еженедельного испытания осталось: " + moment("2021-02-26").diff(moment().format(), "days") + " д."} asideMode="expand" />
 						<SimpleCell onClick={go} data-to="update" expandable before={<Icon28MoonOutline />}>Лунный Новый год</SimpleCell>
 						<SimpleCell onClick={go} data-to="mems" expandable before={<Icon28MasksOutline />}>Мемы</SimpleCell>
 						<SimpleCell onClick={go} data-to="screenshots" expandable before={<Icon28FaceRecognitionOutline />}>Скриншоты персонажей</SimpleCell>
 						<SimpleCell onClick={go} data-to="arts" expandable before={<Icon28PictureStackOutline />}>Арты</SimpleCell>
-					</Group>
-					<Group header={<Header mode="secondary">РАЗВЛЕЧЕНИЯ</Header>}>
 						<SimpleCell onClick={go} data-to="randomgg" expandable before={<Icon28SparkleOutline />}>Случайный голдган</SimpleCell>
-					</Group>
-					<Group header={<Header mode="secondary">ДРУГОЕ</Header>}>
-						{this.state.alert}
 					</Group>
 				</Panel>
 				<Panel id="arcades" activeStory="arcades">
@@ -269,27 +269,34 @@ class Home extends React.Component {
 					<Group header={<Header mode="secondary">ИСТОРИЯ АРКАД ЗА ПОСЛЕДНИЕ 3 ДНЯ</Header>}>
 						<CardScroll size="m" style={{ marginBottom: "-50px" }}>
 							<ContentCard
-								image={this.state.wall.img1}
+								image={this.props.arcadesHistory.img1}
 								disabled
 								style={{ marginBottom: "50px" }}
 								onClick={() => {console.log('ok');}}
 								header="Аркады сегодня"
 							/>
 							<ContentCard
-								image={this.state.wall.img2}
+								image={this.props.arcadesHistory.img2}
 								disabled
 								style={{ marginBottom: "50px" }}
 								header="Аркады вчера"
 							/>
 							<ContentCard
-								image={this.state.wall.img3}
+								image={this.props.arcadesHistory.img3}
 								disabled
 								style={{ marginBottom: "50px" }}
 								header="Аркады позавчера"
 							/>
 						</CardScroll>
 					</Group>
-					<Div>
+				<Div>
+					<Card>
+						<Div>
+							{this.state.alert}
+						</Div>
+					</Card>
+				</Div>
+				<Div>
 					<Card>
 						<Div>
 							<Title level="2" weight="heavy" style={{ marginBottom: 10 }}>Где, допустим, аркады за прошлый месяц?</Title>
