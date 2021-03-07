@@ -25,7 +25,6 @@ import Arts from './panels/Arts';
 import Mems from './panels/Mems';
 import Randomgg from './panels/Randomgg';
 import Gameprofile from './panels/Gameprofile';
-import Offline from './panels/Offline';
 
 const ROUTES = {
 	HOME: 'home',
@@ -37,7 +36,6 @@ const ROUTES = {
 	MEMS: 'mems',
 	RANDOMGG: 'randomgg',
 	GAMEPROFILE: 'gameprofile',
-	OFFLINE: 'offline',
 }
 
 const STORAGE_KEYS = {
@@ -54,6 +52,7 @@ class App extends React.Component {
 			user: null,
 			popout: <ScreenSpinner size='large' />,
 			snackbar: null,
+			online: true,
 			arcades: null,
 			history: ['home'],
 			subscribed: null,
@@ -136,16 +135,19 @@ class App extends React.Component {
 
 		window.addEventListener('offline', () => {
 			bridge.send('VKWebAppDisableSwipeBack');
-			this.setState({activePanel: ROUTES.OFFLINE, history: ['home']});
+			this.setState({activePanel: ROUTES.HOME, online: false, history: ['home'], snackbar: <Snackbar
+					layout='vertical'
+					onClose={() => this.setState({snackbar: null})}>
+					Потеряно соединение с интернетом
+				</Snackbar>});
 		});
 		
 		window.addEventListener('online', () => {
-			this.setState({activePanel: ROUTES.HOME, history: ['home'], snackbar: <Snackbar
-					layout='vertical'
-					onClose={() => this.setState({snackbar: null})}
-					before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}>
-					Соединение восстановлено
-				</Snackbar>});
+			this.setState({online: true, snackbar: <Snackbar
+				layout='vertical'
+				onClose={() => this.setState({snackbar: null})}>
+				Соединение восстановлено
+			</Snackbar>})
 		});
 
 	}
@@ -169,34 +171,42 @@ class App extends React.Component {
 	}
 
 	go(e) {
-		const history = [...this.state.history];
-		history.push(e.currentTarget.dataset.to);
-		if (e.currentTarget.dataset.to === 'home') {
-			bridge.send('VKWebAppDisableSwipeBack');
-			this.setState({ history: ['home'], activePanel: e.currentTarget.dataset.to });
-		} else {
-			this.setState({ history: history, activePanel: e.currentTarget.dataset.to });
-		}
-		document.body.style.overflow = "visible";
+		if (this.state.online === true) {
+			const history = [...this.state.history];
+			history.push(e.currentTarget.dataset.to);
+			if (e.currentTarget.dataset.to === 'home') {
+				bridge.send('VKWebAppDisableSwipeBack');
+				this.setState({ history: ['home'], activePanel: e.currentTarget.dataset.to });
+			} else {
+				this.setState({ history: history, activePanel: e.currentTarget.dataset.to });
+			}
+			document.body.style.overflow = "visible";
 
-		fetch('https://cloud.irbot.net/ow_arcade/api2?act=verify&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
-			.then(response => response.json())
-			.then(data => {
-				if (data.result !== 'ok') {
+			fetch('https://cloud.irbot.net/ow_arcade/api2?act=verify&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
+				.then(response => response.json())
+				.then(data => {
+					if (data.result !== 'ok') {
+						this.setState({activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
+								layout='vertical'
+								onClose={() => this.setState({snackbar: null})}>
+								Упс, что-то пошло не так...
+							</Snackbar>});
+					}
+				})
+				.catch(() => {
 					this.setState({activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
 							layout='vertical'
 							onClose={() => this.setState({snackbar: null})}>
 							Упс, что-то пошло не так...
 						</Snackbar>});
-				}
-			})
-			.catch(() => {
-				this.setState({activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
-						layout='vertical'
-						onClose={() => this.setState({snackbar: null})}>
-						Упс, что-то пошло не так...
-					</Snackbar>});
-			});
+				});
+		} else {
+			this.setState({snackbar: <Snackbar
+					layout='vertical'
+					onClose={() => this.setState({snackbar: null})}>
+					Нет соединения с интернетом
+				</Snackbar>});
+		}
 	};
 
 	goBack = () => {
@@ -245,7 +255,6 @@ class App extends React.Component {
 						<Mems id={ROUTES.MEMS} go={this.go} clickOnLink={this.clickOnLink} />
 						<Randomgg id={ROUTES.RANDOMGG} go={this.go} />
 						<Gameprofile id={ROUTES.GAMEPROFILE} go={this.go} user={this.state.user} />
-						<Offline id={ROUTES.OFFLINE} go={this.go} />
 					</View>
 			</ConfigProvider>
 		);

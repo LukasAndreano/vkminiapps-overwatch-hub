@@ -60,6 +60,12 @@ class Arts extends React.Component {
 				link: 'public',
 				rows: [],
 			},
+			{
+				id: '187694319',
+				name: 'Lucio - The Best Frog',
+				link: 'public',
+				rows: [],
+			},
 		],
       }
 	  this.toggleContext = this.toggleContext.bind(this);
@@ -180,6 +186,13 @@ class Arts extends React.Component {
                   >
                     Эш
                   </Cell>
+					<Cell
+						after={this.state.mode === 'tab6' ? <Icon24Done fill="var(--accent)" /> : null}
+						onClick={this.select}
+						data-mode="tab6"
+					>
+						Лусио
+					</Cell>
                 </List>
               </PanelHeaderContext>
 			  {this.state.spinner === true && <ScreenSpinner size='large' />}
@@ -191,6 +204,7 @@ class Arts extends React.Component {
 						{this.state.mode === 'tab3' && this.state.groups[2].rows}
 						{this.state.mode === 'tab4' && this.state.groups[3].rows}
 						{this.state.mode === 'tab5' && this.state.groups[4].rows}
+						{this.state.mode === 'tab6' && this.state.groups[5].rows}
 					</CardGrid>
 			  </Group>
 			  }
