@@ -1,0 +1,39 @@
+* {
+	-webkit-touch-callout: none; 
+	-webkit-user-select: none;   
+	-khtml-user-select: none;   
+	-moz-user-select: none;     
+	-ms-user-select: none;
+	user-select: none;
+}
+.UpdateBlock {
+	margin-bottom: 10px;
+}
+a,a:hover,a:active {
+	text-decoration: none;
+	color: var(--text_primary);
+}
+.FixedLayout--android {
+	top: 0;
+}
+.WelcomeBlock .Avatar {
+	padding-bottom: 20px;;
+}
+.Button--sz-l:hover {
+	color: var(--button_secondary_foreground) !important;
+}
+.Tappable--android .SimpleCell--android .PanelHeaderContext--opened  {
+	margin-top: 60px !important;
+}
+.Div .SimpleCell {
+	border-radius: 15px;
+}
+.homePage .Snackbar {
+	bottom: 50px;
+}
+.content {
+	width: 100%;
+}
+.TabbarItem__in:hover,.Switch:hover {
+	cursor: pointer;
+}
