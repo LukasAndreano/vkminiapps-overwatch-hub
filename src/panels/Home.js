@@ -1,5 +1,6 @@
 import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
+import moment from 'moment';
 import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
 import {
 	Avatar,
@@ -22,6 +23,7 @@ import {
 	Tabbar,
 	TabbarItem,
 	CardGrid,
+	Banner,
 	Epic,
 } from '@vkontakte/vkui';
 import {
@@ -36,6 +38,7 @@ import {
 	Icon28AllCategoriesOutline,
 	Icon28GameOutline,
 	Icon28Profile,
+	Icon48DonateOutline,
 } from '@vkontakte/icons';
 
 class Home extends React.Component {
@@ -239,6 +242,7 @@ class Home extends React.Component {
 				<Panel id="menu" activeStory="menu">
 					<PanelHeader separator={false} left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
 					<Group>
+						<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца испытания «Пачимарт»: " + moment("2021-03-23").diff(moment().format(), "days") + " д."} asideMode="expand" />
 						<SimpleCell onClick={go} data-to="gameprofile" expandable before={<Icon28Profile />}>Игровой профиль</SimpleCell>
 						<SimpleCell onClick={go} data-to="update" expandable before={<Icon28MoonOutline />}>Лунный Новый год</SimpleCell>
 						<SimpleCell onClick={go} data-to="mems" expandable before={<Icon28MasksOutline />}>Мемы</SimpleCell>

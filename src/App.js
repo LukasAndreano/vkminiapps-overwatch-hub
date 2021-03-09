@@ -25,6 +25,7 @@ import Arts from './panels/Arts';
 import Mems from './panels/Mems';
 import Randomgg from './panels/Randomgg';
 import Gameprofile from './panels/Gameprofile';
+import Weeklyskin from './panels/Weeklyskin';
 
 const ROUTES = {
 	HOME: 'home',
@@ -36,6 +37,7 @@ const ROUTES = {
 	MEMS: 'mems',
 	RANDOMGG: 'randomgg',
 	GAMEPROFILE: 'gameprofile',
+	WEEKLYSKIN: 'weeklyskin',
 }
 
 const STORAGE_KEYS = {
@@ -255,6 +257,7 @@ class App extends React.Component {
 						<Mems id={ROUTES.MEMS} go={this.go} clickOnLink={this.clickOnLink} />
 						<Randomgg id={ROUTES.RANDOMGG} go={this.go} />
 						<Gameprofile id={ROUTES.GAMEPROFILE} go={this.go} user={this.state.user} />
+						<Weeklyskin id={ROUTES.WEEKLYSKIN} go={this.go} />
 					</View>
 			</ConfigProvider>
 		);
