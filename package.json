@@ -1,7 +1,7 @@
 {
   "name": "OWHUB",
   "version": "1.2.0",
-  "description": "Мини-приложение, показывающее список аркад по игре Overwatch и не только",
+  "description": "Список аркад, статистика профиля, новости, мемы, скриншоты и арты - всё в одном приложении.",
   "main": "index.js",
   "scripts": {
     "start": "cross-env react-scripts start",
@@ -28,7 +28,6 @@
     "babel-eslint": "^10.1.0",
     "chalk": "^2.4.2",
     "core-js": "^3.8.3",
-    "crypto": "^1.0.1",
     "eruda": "^2.4.1",
     "eruda-code": "^2.0.0",
     "eruda-dom": "^2.0.0",
