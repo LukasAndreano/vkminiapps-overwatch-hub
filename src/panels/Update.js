@@ -32,7 +32,7 @@ class Update extends React.Component {
 		let {id, go} = this.props;
 		return (
 		<Panel id={id}>
-			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
+			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>} >
 				Обновление
 			</PanelHeader>
 			<Div>

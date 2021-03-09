@@ -119,7 +119,7 @@ class Mems extends React.Component {
 		let {id, go} = this.props;
 		return (
 		<Panel id={id}>
-			<PanelHeader left={<PanelHeaderBack onClick={go} data-to="home"/>} >
+			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>} >
 				<PanelHeaderContent
 					aside={<Icon16Dropdown style={{ transform: `rotate(${this.state.contextOpened ? '180deg' : '0'})` }} />}
 					onClick={this.toggleContext}

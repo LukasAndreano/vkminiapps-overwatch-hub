@@ -28,7 +28,7 @@ class Weeklyskin extends React.Component {
 			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>} >
 				Испытание
 			</PanelHeader>
-			<CardGrid size="l">
+			<CardGrid size="l" style={{paddingTop: 15}}>
 			    <ContentCard
 					onError={(e) => {e.target.style.display = 'none'; this.setState({snackbar: <Snackbar onClose={() => this.setState({ snackbar: null })}>Произошла ошибка при загрузке картинки в ленте. Повторите запрос позже.</Snackbar>
 					});}}

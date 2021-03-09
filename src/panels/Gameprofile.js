@@ -88,15 +88,25 @@ class Gameprofile extends React.Component {
 			{getParams.vk_user_id == this.props.user.id &&
 				bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 197332265})
 				.then(data => {
-					bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-					this.setState({request: true, snackbar:
-						<Snackbar
-							onClose={() => this.setState({ snackbar: null  })}>
-							Мы отправили тебе сообщение с ссылкой. Проверь личку, пожалуйста.
-						</Snackbar>
-					});
 					try	{
 						fetch('https://cloud.irbot.net/ow_arcade/api2?act=connectaccount&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
+							.then(data => {
+							if (data.result == 'ok') {
+								bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
+								this.setState({request: true, snackbar:
+										<Snackbar
+											onClose={() => this.setState({ snackbar: null  })}>
+											Мы отправили тебе сообщение с ссылкой. Проверь личку, пожалуйста.
+										</Snackbar>
+								});
+							} else {
+								this.setState({snackbar: <Snackbar
+										layout='vertical'
+										onClose={() => this.setState({snackbar: null})}>
+										Мы уже отправляли тебе сообщение. Проверь личку.
+									</Snackbar>})
+							}
+						})
 					} catch(err) {
 						this.setState({snackbar: <Snackbar
 								layout='vertical'
