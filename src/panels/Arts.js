@@ -86,7 +86,7 @@ class Arts extends React.Component {
 		requestAnimationFrame(this.toggleContext);
 	}
 	componentDidMount() {
-		fetch('https://cloud.irbot.net/ow_arcade/api2?act=loadWall&page=arts&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
+		fetch('https://cloud.irbot.net/ow_arcade/api?act=loadWall&page=arts&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
 			.then(response => response.json())
 			.then(data => {
 				try {

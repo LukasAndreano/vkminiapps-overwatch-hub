@@ -45,7 +45,7 @@ class Gameprofile extends React.Component {
 	}
 	componentDidMount() {
 		try	{
-			fetch('https://cloud.irbot.net/ow_arcade/api2?act=db.GetGameProfile&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
+			fetch('https://cloud.irbot.net/ow_arcade/api?act=db.GetGameProfile&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
 				.then(response => response.json())
 				.then(data => {
 					if (data.result !== null) {
@@ -89,7 +89,7 @@ class Gameprofile extends React.Component {
 				bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 197332265})
 				.then(data => {
 					try	{
-						fetch('https://cloud.irbot.net/ow_arcade/api2?act=connectaccount&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
+						fetch('https://cloud.irbot.net/ow_arcade/api?act=connectaccount&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
 							.then(data => {
 							if (data.result == 'ok') {
 								bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});

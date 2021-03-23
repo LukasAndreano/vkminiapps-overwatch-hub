@@ -1,6 +1,5 @@
 import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import moment from 'moment';
 import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
 import {
 	Avatar,
@@ -16,14 +15,12 @@ import {
 	Title,
 	Text,
 	CardScroll,
-	PromoBanner,
 	PanelHeaderButton,
 	ContentCard,
 	Button,
 	Tabbar,
 	TabbarItem,
 	CardGrid,
-	Banner,
 	Epic,
 } from '@vkontakte/vkui';
 import {
@@ -38,7 +35,6 @@ import {
 	Icon28AllCategoriesOutline,
 	Icon28GameOutline,
 	Icon28Profile,
-	Icon48DonateOutline,
 } from '@vkontakte/icons';
 
 class Home extends React.Component {
@@ -75,11 +71,7 @@ class Home extends React.Component {
 		}
 	}
 	componentDidMount() {
-		bridge.send('VKWebAppGetAds')
-		.then((promoBannerProps) => {
-			this.setState({ promoBannerProps });
-		})
-		fetch('https://cloud.irbot.net/ow_arcade/api2?act=loadWall&page=news&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
+		fetch('https://cloud.irbot.net/ow_arcade/api?act=loadWall&page=news&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
 			.then(response => response.json())
 			.then(data => {
 				let rows = [];
@@ -138,7 +130,7 @@ class Home extends React.Component {
 	}
 	changeSubscribe(subscribed) {
 		if (subscribed == true) {
-				fetch('https://cloud.irbot.net/ow_arcade/api2?act=unsubscribe&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
+				fetch('https://cloud.irbot.net/ow_arcade/api?act=unsubscribe&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
 					.then(response => response.json())
 					.then(data => {
 						bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
@@ -154,7 +146,7 @@ class Home extends React.Component {
 		} else {
 			bridge.send("VKWebAppAllowMessagesFromGroup", {"group_id": 197332265})
 				.then(data => {
-					fetch('https://cloud.irbot.net/ow_arcade/api2?act=subscribe&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
+					fetch('https://cloud.irbot.net/ow_arcade/api?act=subscribe&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
 						.then(response => response.json())
 						.then(data => {
 							bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
@@ -242,7 +234,6 @@ class Home extends React.Component {
 				<Panel id="menu" activeStory="menu">
 					<PanelHeader separator={false} left={<PanelHeaderButton onClick={go} data-to="faq"><Icon28HelpCircleOutline/></PanelHeaderButton>}>Главная</PanelHeader>
 					<Group>
-						<Banner before={<Icon48DonateOutline />} onClick={go} data-to="weeklyskin" header={"До конца испытания «Пачимарт»: " + moment("2021-03-23").diff(moment().format(), "days") + " д."} asideMode="expand" />
 						<SimpleCell onClick={go} data-to="gameprofile" expandable before={<Icon28Profile />}>Игровой профиль</SimpleCell>
 						<SimpleCell onClick={go} data-to="update" expandable before={<Icon28MoonOutline />}>Лунный Новый год</SimpleCell>
 						<SimpleCell onClick={go} data-to="mems" expandable before={<Icon28MasksOutline />}>Мемы</SimpleCell>
@@ -250,8 +241,7 @@ class Home extends React.Component {
 						<SimpleCell onClick={go} data-to="arts" expandable before={<Icon28PictureStackOutline />}>Арты</SimpleCell>
 						<SimpleCell onClick={go} data-to="randomgg" expandable before={<Icon28SparkleOutline />}>Случайный голдган</SimpleCell>
 					</Group>
-					{ this.state.promoBannerProps != null && <PromoBanner bannerData={ this.state.promoBannerProps } onClose={() => {this.setState({promoBannerProps: null})}} /> }
-				</Panel>
+					</Panel>
 				<Panel id="arcades" activeStory="arcades">
 					<PanelHeader separator={false}>Аркады</PanelHeader>
 					<Group header={<Header mode="secondary">СПИСОК АРКАД НА СЕГОДНЯ</Header>}>
