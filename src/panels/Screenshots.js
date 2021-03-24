@@ -40,6 +40,11 @@ class Screenshots extends React.Component {
                     name: 'Скриншоты Симметры | Symmetra Overwatch',
                     rows: [],
                 },
+                {
+                    id: '181592030',
+                    name: 'Морды из Overwatch',
+                    rows: [],
+                },
             ],
         }
         this.toggleContext = this.toggleContext.bind(this);
@@ -152,6 +157,13 @@ class Screenshots extends React.Component {
                         >
                             Симметра
                         </Cell>
+                        <Cell
+                            after={this.state.mode === 'tab3' ? <Icon24Done fill="var(--accent)"/> : null}
+                            onClick={this.select}
+                            data-mode="tab3"
+                        >
+                            Заря
+                        </Cell>
                     </List>
                 </PanelHeaderContext>
                 {this.state.spinner === true && <ScreenSpinner size='large'/>}
@@ -160,6 +172,7 @@ class Screenshots extends React.Component {
                     <CardGrid size="l">
                         {this.state.mode === 'tab1' && this.state.groups[0].rows}
                         {this.state.mode === 'tab2' && this.state.groups[1].rows}
+                        {this.state.mode === 'tab3' && this.state.groups[2].rows}
                     </CardGrid>
                 </Group>
                 }
