@@ -1,267 +1,533 @@
-import React, { useState } from 'react';
-import bridge from '@vkontakte/vk-bridge';
-import smoothscroll from 'smoothscroll-polyfill';
+import React, {useState} from 'react'
+import bridge from '@vkontakte/vk-bridge'
+import smoothscroll from 'smoothscroll-polyfill'
 import queryString from 'query-string'
-import '@vkontakte/vkui/dist/vkui.css';
+import '@vkontakte/vkui/dist/vkui.css'
 import {
-	View,
-	Snackbar,
-	Avatar,
-	ScreenSpinner,
-	ContentCard,
-	ConfigProvider,
-} from '@vkontakte/vkui';
+    View,
+    Snackbar,
+    Avatar,
+    ScreenSpinner,
+    ContentCard,
+    ConfigProvider,
+    Div,
+    SimpleCell,
+    Button,
+    ModalCard,
+    ModalRoot,
+} from '@vkontakte/vkui'
 
-import OverwatchDailyArcadeIcon from './img/ow_arcade.jpg';
+import {
+    Icon28LikeOutline,
+    Icon56SearchLikeOutline,
+    Icon56ErrorOutline,
+    Icon56LikeOutline,
+    Icon56HideOutline,
+    Icon56NotePenOutline,
+    Icon56CheckCircleOutline,
+} from '@vkontakte/icons'
 
-import "./css/Index.css";
+import OverwatchDailyArcadeIcon from './img/ow_arcade.jpg'
 
-import Home from './panels/Home';
-import Intro from './panels/Intro';
-import Update from './panels/Update';
-import FAQ from './panels/FAQ';
-import Screenshots from './panels/Screenshots';
-import Arts from './panels/Arts';
-import Mems from './panels/Mems';
-import Randomgg from './panels/Randomgg';
-import Gameprofile from './panels/Gameprofile';
+import fetch2 from './components/Fetch'
+
+import "./css/Index.css"
+
+import Home from './panels/Home'
+import Intro from './panels/Intro'
+import Update from './panels/Update'
+import FAQ from './panels/FAQ'
+import Screenshots from './panels/Screenshots'
+import Arts from './panels/Arts'
+import Mems from './panels/Mems'
+import Randomgg from './panels/Randomgg'
+import Gameprofile from './panels/Gameprofile'
+import FindTeammate from './panels/FindTeammate'
+import Textpage from './panels/Textpage'
+import Settings from './panels/Settings'
 
 const ROUTES = {
-	HOME: 'home',
-	INTRO: 'intro',
-	UPDATE: 'update',
-	FAQ: 'faq',
-	SCREENSHOTS: 'screenshots',
-	ARTS: 'arts',
-	MEMS: 'mems',
-	RANDOMGG: 'randomgg',
-	GAMEPROFILE: 'gameprofile',
+    HOME: 'home',
+    INTRO: 'intro',
+    UPDATE: 'update',
+    FAQ: 'faq',
+    SCREENSHOTS: 'screenshots',
+    ARTS: 'arts',
+    MEMS: 'mems',
+    RANDOMGG: 'randomgg',
+    GAMEPROFILE: 'gameprofile',
+    FINDTEAMMATE: 'findteammate',
+    TEXTPAGE: 'textpage',
+    SETTINGS: 'settings',
 }
 
 const STORAGE_KEYS = {
-	STATUS: 'status',
+    STATUS: 'status',
 }
 
-smoothscroll.polyfill();
+smoothscroll.polyfill()
 
 class App extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			activePanel: ROUTES.HOME,
-			user: null,
-			popout: <ScreenSpinner size='large' />,
-			snackbar: null,
-			online: true,
-			arcades: null,
-			history: ['home'],
-			subscribed: null,
-			// scroll[0] - home screen, news tab | scroll[1] - home screen, arcades tab
-			scrolls: [
-				{scroll: 0},
-				{scroll: 0},
-			],
-			arcadesHistory: {
-				img1: null,
-				img2: null,
-				img3: null,
-			},
-		};
-		this.go = this.go.bind(this);
-		this.goBack = this.goBack.bind(this);
-		this.viewIntro = this.viewIntro.bind(this);
-		this.AndroidBackButton = this.AndroidBackButton.bind(this);
-		this.saveScroll = this.saveScroll.bind(this);
-		this.getScroll = this.getScroll.bind(this);
-		this.clickOnLink = this.clickOnLink.bind(this);
-	}
+    constructor(props) {
+        super(props)
+        this.state = {
+            activePanel: ROUTES.HOME,
+            user: null,
+            popout: <ScreenSpinner size='large'/>,
+            snackbar: null,
+            online: true,
+            arcades: null,
+            history: ['home'],
+            subscribed: null,
+            activeModal: null,
+            modalHistory: [],
+            profileDataInfo: 'Загружаем данные игрового профиля...',
+            // scroll[0] - home screen, news tab | scroll[1] - home screen, arcades tab
+            scrolls: [
+                {scroll: 0},
+                {scroll: 0},
+            ],
+            arcadesHistory: {
+                img1: null,
+                img2: null,
+                img3: null,
+            },
+            profile: {
+                avatar: null,
+            },
+            form: {
+                about: '',
+                age: '',
+                playtime: '',
+                discord: '',
+            },
+            textpage: {
+                title: null,
+                text: null,
+                button: null,
+                link: null,
+                success: true,
+            },
+        }
+        this.go = this.go.bind(this)
+        this.goBack = this.goBack.bind(this)
+        this.viewIntro = this.viewIntro.bind(this)
+        this.AndroidBackButton = this.AndroidBackButton.bind(this)
+        this.saveScroll = this.saveScroll.bind(this)
+        this.getScroll = this.getScroll.bind(this)
+        this.clickOnLink = this.clickOnLink.bind(this)
+        this.setActiveModal = this.setActiveModal.bind(this)
+        this.openTextPage = this.openTextPage.bind(this)
+    }
 
-	componentDidMount() {
+    componentDidMount() {
 
-		var getParams = queryString.parse(window.location.search);
+        var getParams = queryString.parse(window.location.search)
 
-		bridge.subscribe(({ detail: { type, data }}) => {
-			if (type === 'VKWebAppUpdateConfig') {
-				const schemeAttribute = document.createAttribute('scheme');
-				schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-				document.body.attributes.setNamedItem(schemeAttribute);
-			}
-		});
+        bridge.subscribe(({detail: {type, data}}) => {
+            if (type === 'VKWebAppUpdateConfig') {
+                const schemeAttribute = document.createAttribute('scheme')
+                schemeAttribute.value = data.scheme ? data.scheme : 'client_light'
+                document.body.attributes.setNamedItem(schemeAttribute)
+            }
+        })
 
-		bridge.send('VKWebAppGetUserInfo').then(data => {
-			this.setState({user: data});
-			if (getParams.vk_user_id == data.id) {
-				try	{
-					fetch('https://cloud.irbot.net/ow_arcade/api?act=startapp&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
-						.then(response => response.json())
-						.then(data => {
-							let arcades = [];
-							data.result.arcades.map(el => {
-								arcades.push(<ContentCard
-									image={el.img}
-									subtitle={"Аркада #" + el.id}
-									header={el.name}
-									caption={null}
-									disabled
-									key={el.id}
-									style={{ marginBottom: "50px" }}
-								/>);
-							});
-							this.setState({arcades: arcades, subscribed: data.result.subscribed, popout: null, arcadesHistory: {img1: data.result.post0, img2: data.result.post1, img3: data.result.post2}});
-						});
-					} catch(err) {
-						this.setState({
-							snackbar: <Snackbar
-								layout='vertical'
-								onClose={() => this.setState({snackbar: null})}
-								before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}>
-								Не удалось загрузить информацию
-							</Snackbar>
-						});
-					}
-			}
-		});
+        bridge.send('VKWebAppGetUserInfo').then(data => {
+            this.setState({user: data})
+            if (getParams.vk_user_id == data.id) {
+                try {
+                    fetch2('startapp').then(data => {
+                        let arcades = []
+                        data.result.arcades.map(el => {
+                            arcades.push(<ContentCard
+                                image={el.img}
+                                subtitle={"Аркада #" + el.id}
+                                header={el.name}
+                                caption={null}
+                                disabled
+                                key={el.id}
+                                style={{marginBottom: "50px"}}
+                            />)
+                        })
+                        this.setState({
+                            arcades: arcades,
+                            subscribed: data.result.subscribed,
+                            popout: null,
+                            arcadesHistory: {img1: data.result.post0, img2: data.result.post1, img3: data.result.post2}
+                        })
+                    })
+                } catch (err) {
+                    this.setState({
+                        snackbar: <Snackbar
+                            layout='vertical'
+                            onClose={() => this.setState({snackbar: null})}
+                            before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}>
+                            Не удалось загрузить информацию
+                        </Snackbar>
+                    })
+                }
+            }
+        })
 
-		bridge.send('VKWebAppStorageGet', {
-			keys: Object.values(STORAGE_KEYS),
-		})
-		.then(data => {
-			if (data.keys[0].value !== 'true') {
-				this.setState({activePanel: ROUTES.INTRO});
-			}
-		})
+        bridge.send('VKWebAppStorageGet', {
+            keys: Object.values(STORAGE_KEYS),
+        })
+            .then(data => {
+                if (data.keys[0].value !== 'true') {
+                    this.setState({activePanel: ROUTES.INTRO})
+                }
+            })
 
-		window.addEventListener("popstate", this.AndroidBackButton);
+        window.addEventListener("popstate", this.AndroidBackButton)
 
-		window.addEventListener('offline', () => {
-			bridge.send('VKWebAppDisableSwipeBack');
-			this.setState({activePanel: ROUTES.HOME, online: false, history: ['home'], snackbar: <Snackbar
-					layout='vertical'
-					onClose={() => this.setState({snackbar: null})}>
-					Потеряно соединение с интернетом
-				</Snackbar>});
-		});
-		
-		window.addEventListener('online', () => {
-			this.setState({online: true, snackbar: <Snackbar
-				layout='vertical'
-				onClose={() => this.setState({snackbar: null})}>
-				Соединение восстановлено
-			</Snackbar>})
-		});
+        window.addEventListener('offline', () => {
+            bridge.send('VKWebAppDisableSwipeBack')
+            this.setState({
+                activePanel: ROUTES.HOME, online: false, history: ['home'], snackbar: <Snackbar
+                    layout='vertical'
+                    onClose={() => this.setState({snackbar: null})}>
+                    Потеряно соединение с интернетом
+                </Snackbar>
+            })
+        })
 
-		bridge.send("VKWebAppShowNativeAds", {ad_format:"preloader"})
+        window.addEventListener('online', () => {
+            this.setState({
+                online: true, snackbar: <Snackbar
+                    layout='vertical'
+                    onClose={() => this.setState({snackbar: null})}>
+                    Соединение восстановлено
+                </Snackbar>
+            })
+        })
 
-	}
+        bridge.send("VKWebAppShowNativeAds", {ad_format:"preloader"})
 
-	viewIntro() {
-		try {
-			bridge.send('VKWebAppStorageSet', {
-				key: STORAGE_KEYS.STATUS,
-				value: "true",
-			});
-			this.setState({activePanel: ROUTES.HOME});
-		} catch(error) {
-			this.setState({snackbar: <Snackbar
-				layout='vertical'
-				onClose={() => this.setState({snackbar: null})}
-				before={<Avatar src={OverwatchDailyArcadeIcon} size={32} />}>
-				Упс, что-то пошло не так...
-			</Snackbar>})
-		}
+    }
 
-	}
+    setActiveModal(activeModal, profileData) {
+        activeModal = activeModal || null
+        profileData = profileData || {avatar: <OverwatchDailyArcadeIcon/>}
+        if (profileData.battletag !== undefined && profileData.battletag !== null) {
+            fetch('https://owapi.io/profile/pc/eu/' + profileData.battletag.replace(/#/g, '-'))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.private === true && data.username !== '')
+                        this.setState({profileDataInfo: "Игровой профиль закрыт, невозможно получить информацию."})
+                    else if (data.message === 'Error: Profile not found')
+                        this.setState({profileDataInfo: "У пользователя нулевой аккаунт в Overwatch, либо его не существует."})
+                    else if (data.username === '')
+                        this.setState({profileDataInfo: "Мы не смогли подгрузить информацию по профилю, так как сервер Blizzard перестал отвечать."})
+                    else
+                        this.setState({profileDataInfoSuccess: data, profileDataInfo: ''})
+                })
+        } else {
+            setTimeout(() => {
+                this.setState({
+                    profileDataInfo: 'Невозможно получить данные об игровом аккаунте.',
+                    profileDataInfoSuccess: null
+                })
+            }, 300);
+        }
+        let modalHistory = this.state.modalHistory ? [...this.state.modalHistory] : []
 
-	go(e) {
-		if (this.state.online === true) {
-			const history = [...this.state.history];
-			history.push(e.currentTarget.dataset.to);
-			if (e.currentTarget.dataset.to === 'home') {
-				bridge.send('VKWebAppDisableSwipeBack');
-				this.setState({ history: ['home'], activePanel: e.currentTarget.dataset.to });
-			} else {
-				this.setState({ history: history, activePanel: e.currentTarget.dataset.to });
-			}
-			document.body.style.overflow = "visible";
+        if (activeModal === null) {
+            modalHistory = []
+        } else if (modalHistory.indexOf(activeModal) !== -1) {
+            modalHistory = modalHistory.splice(0, modalHistory.indexOf(activeModal) + 1)
+        } else {
+            modalHistory.push(activeModal)
+        }
+        this.setState({
+            activeModal,
+            modalHistory,
+            profile: profileData,
+        })
+    }
 
-			fetch('https://cloud.irbot.net/ow_arcade/api?act=verify&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
-				.then(response => response.json())
-				.then(data => {
-					if (data.result !== 'ok') {
-						this.setState({activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
-								layout='vertical'
-								onClose={() => this.setState({snackbar: null})}>
-								Упс, что-то пошло не так...
-							</Snackbar>});
-					}
-				})
-				.catch(() => {
-					this.setState({activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
-							layout='vertical'
-							onClose={() => this.setState({snackbar: null})}>
-							Упс, что-то пошло не так...
-						</Snackbar>});
-				});
-		} else {
-			this.setState({snackbar: <Snackbar
-					layout='vertical'
-					onClose={() => this.setState({snackbar: null})}>
-					Нет соединения с интернетом
-				</Snackbar>});
-		}
-	};
+    viewIntro() {
+        try {
+            bridge.send('VKWebAppStorageSet', {
+                key: STORAGE_KEYS.STATUS,
+                value: "true",
+            })
+            this.setState({activePanel: ROUTES.HOME})
+        } catch (error) {
+            this.setState({
+                snackbar: <Snackbar
+                    layout='vertical'
+                    onClose={() => this.setState({snackbar: null})}
+                    before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}>
+                    Упс, что-то пошло не так...
+                </Snackbar>
+            })
+        }
 
-	goBack = () => {
-		const history = [...this.state.history];
-		history.pop();
-		const activePanel = history[history.length - 1];
-		if (activePanel === 'home') {
-		  bridge.send('VKWebAppEnableSwipeBack');
-		}
-		document.body.style.overflow = "visible";
-		this.setState({ history: history, activePanel });
-	}
-	
-	AndroidBackButton = () => {
-		if (this.state.activePanel !== ROUTES.HOME && this.state.activePanel !== ROUTES.INTRO) {
-			this.goBack();
-		} else {
-			bridge.send("VKWebAppClose", {"status": "success"});
-		}
-	}
+    }
 
-	saveScroll(id, scroll) {
-		this.state.scrolls[id].scroll = scroll;
-	}
+    go(panel) {
+        if (this.state.online === true) {
+            const history = [...this.state.history]
+            history.push(panel)
+            if (panel === 'home') {
+                bridge.send('VKWebAppDisableSwipeBack')
+                this.setState({history: ['home'], activePanel: panel})
+            } else {
+                this.setState({history: history, activePanel: panel})
+            }
+            document.body.style.overflow = "visible"
+            fetch2('verify').then(data => {
+                if (data.result !== 'ok') {
+                    this.setState({
+                        activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
+                            layout='vertical'
+                            onClose={() => this.setState({snackbar: null})}>
+                            Упс, что-то пошло не так...
+                        </Snackbar>
+                    })
+                }
+            })
+                .catch(() => {
+                    this.setState({
+                        activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
+                            layout='vertical'
+                            onClose={() => this.setState({snackbar: null})}>
+                            Упс, что-то пошло не так...
+                        </Snackbar>
+                    })
+                })
+        } else {
+            this.setState({
+                snackbar: <Snackbar
+                    layout='vertical'
+                    onClose={() => this.setState({snackbar: null})}>
+                    Нет соединения с интернетом
+                </Snackbar>
+            })
+        }
+    }
 
-	getScroll(id) {
-		return this.state.scrolls[id].scroll;
-	}
 
-	clickOnLink() {
-		document.body.style.pointerEvents = "none";
-		setTimeout(() => {document.body.style.pointerEvents = "all";}, 1000);
-	}
+    goBack = () => {
+        const history = [...this.state.history]
+        history.pop()
+        const activePanel = history[history.length - 1]
+        if (activePanel === 'home') {
+            bridge.send('VKWebAppEnableSwipeBack')
+        }
+        document.body.style.overflow = "visible"
+        this.setState({history: history, activePanel})
+    }
 
-	render() {
-		history.pushState(null, null);
-		return (
-			<ConfigProvider isWebView={true}>
-					<View activePanel={this.state.activePanel} popout={this.state.popout} onSwipeBack={this.goBack} history={this.state.history}>
-						<Home id={ROUTES.HOME} go={this.go} subscribed={this.state.subscribed} clickOnLink={this.clickOnLink} arcadesHistory={this.state.arcadesHistory} saveScroll={this.saveScroll} getScroll={this.getScroll} arcades={this.state.arcades} user={this.state.user} snackbarError={this.state.snackbar} />
-						<Intro id={ROUTES.INTRO} go={this.viewIntro} user={this.state.user} snackbarError={this.state.snackbar} />
-						<Update id={ROUTES.UPDATE} go={this.go} clickOnLink={this.clickOnLink}  />
-						<FAQ id={ROUTES.FAQ} go={this.go} clickOnLink={this.clickOnLink}  />
-						<Screenshots id={ROUTES.SCREENSHOTS} go={this.go} clickOnLink={this.clickOnLink} />
-						<Arts id={ROUTES.ARTS} go={this.go} clickOnLink={this.clickOnLink} />
-						<Mems id={ROUTES.MEMS} go={this.go} clickOnLink={this.clickOnLink} />
-						<Randomgg id={ROUTES.RANDOMGG} go={this.go} />
-						<Gameprofile id={ROUTES.GAMEPROFILE} go={this.go} user={this.state.user} />
-					</View>
-			</ConfigProvider>
-		);
-	}
+    AndroidBackButton = () => {
+        if (this.state.activePanel !== ROUTES.HOME && this.state.activePanel !== ROUTES.INTRO)
+            this.goBack()
+        else
+            bridge.send("VKWebAppClose", {"status": "success"})
+    }
+
+    openTextPage(title, text, button, link, success) {
+        this.setState({
+            textpage: {
+                title: title,
+                text: text,
+                button: button,
+                link: link,
+                success: success,
+            }
+        })
+        this.go('textpage')
+    }
+
+    saveScroll(id, scroll) {
+        this.state.scrolls[id].scroll = scroll
+    }
+
+    getScroll(id) {
+        return this.state.scrolls[id].scroll
+    }
+
+    clickOnLink() {
+        document.body.style.pointerEvents = "none"
+        setTimeout(() => {
+            document.body.style.pointerEvents = "all"
+        }, 1000)
+    }
+
+    render() {
+        const modal = (
+            <ModalRoot
+                activeModal={this.state.activeModal}
+            >
+                <ModalCard
+                    id='profile'
+                    onClose={() => {
+                        this.setActiveModal(null)
+                    }}
+                    subheader={<div style={{textAlign: 'left'}}>
+                        <SimpleCell disabled description={this.state.profile.tag}
+                                    badge={this.state.profile.verified} before={<Avatar size={40}
+                                                                                        src={this.state.profile.avatar}/>}>{this.state.profile.name}</SimpleCell>
+                        <Div>
+                            {this.state.profile.text}
+                            <br/><br/>
+                            Возраст: {this.state.profile.age} <br/>
+                            Игровое время: {this.state.profile.playtime} <br/>
+                            Микрофон: {this.state.profile.microphone ? "Да" : "Нет"} <br/>
+                            Discord: {this.state.profile.discord ? this.state.profile.discord.replace(/-/g, '#') : "Не привязан"} <br/>
+                            <br/>
+                            {this.state.profileDataInfo}
+                            {this.state.profileDataInfoSuccess &&
+                            <div>
+                                Статистика аккаунта: <br/>
+                                Игровой лвл: {this.state.profileDataInfoSuccess.level} | Уровень
+                                репутации: {this.state.profileDataInfoSuccess.endorsement.frame.substr(-1)} <br/>
+
+                                Ранкед: <br/>
+                                Танки
+                                - {this.state.profileDataInfoSuccess.competitive.tank.rank ? this.state.profileDataInfoSuccess.competitive.tank.rank : "калибровка"}
+                                <br/>
+                                Дамагеры
+                                - {this.state.profileDataInfoSuccess.competitive.damage.rank ? this.state.profileDataInfoSuccess.competitive.damage.rank : "калибровка"}
+                                <br/>
+                                Хилы
+                                - {this.state.profileDataInfoSuccess.competitive.support.rank ? this.state.profileDataInfoSuccess.competitive.support.rank : "калибровка"}
+                            </div>
+                            }
+                        </Div>
+                    </div>
+                    }
+                    actions={
+                        <Button size="l" mode="primary" href={"https://vk.com/write" + this.state.profile.user_id} target="_blank">
+                            Написать в личку
+                        </Button>
+                    }
+                >
+
+                </ModalCard>
+
+                <ModalCard
+                    id='start1'
+                    onClose={() => {
+                        this.setActiveModal('start2')
+                    }}
+                    icon={<Icon56SearchLikeOutline/>}
+                    header="Mada-mada!"
+                    subheader={"Добро пожаловать в раздел, где ты сможешь найти любого интересующего тебя игрока: покет мерси, райнхардта, который не чарджится в толпу, или же вдову с хорошим аимом. Мы проведем небольшой инструктаж для тебя, хорошо?"}
+                    actions={
+                        <Button size="l" mode="primary" onClick={() => {
+                            this.setActiveModal('start2')
+                        }}>
+                            Окей, начнём
+                        </Button>
+                    }
+                />
+
+                <ModalCard
+                    id='start2'
+                    onClose={() => {
+                        this.setActiveModal('start3')
+                    }}
+                    icon={<Icon56ErrorOutline/>}
+                    header="Начнём с того, что тут запрещены маты и оскорбления"
+                    subheader={"Использовать нецензурную брань в описании профиля, батлнет-теге, дискорд-теге запрещено, так как это противоречит правилам VK Mini Apps. Если мы обнаружим в твоих текстах маты и оскорбления, то твой профиль будет заблокирован. Будь добрее, камон! Агрессия - это плохо!"}
+                    actions={
+                        <Button size="l" mode="primary" onClick={() => {
+                            this.setActiveModal('start3')
+                        }}>
+                            Оки, не буду материться
+                        </Button>
+                    }
+                />
+
+                <ModalCard
+                    id='start3'
+                    onClose={() => {
+                        this.setActiveModal('start4')
+                    }}
+                    icon={<Icon56HideOutline/>}
+                    header="Скрытие профиля"
+                    subheader={"В любой момент времени ты можешь скрыть профиль и он не будет отображаться в ленте. Однако со скрытым профилем ты не сможешь лайкать других пользователей, как и они тебя."}
+                    actions={
+                        <Button size="l" mode="primary" onClick={() => {
+                            this.setActiveModal('start4')
+                        }}>
+                            Ясно-понятно!
+                        </Button>
+                    }
+                />
+
+
+                <ModalCard
+                    id='start4'
+                    onClose={() => {
+                        this.setActiveModal(null)
+                        this.go('settings')
+                    }}
+                    icon={<Icon56NotePenOutline/>}
+                    header="Ну что, начнём?"
+                    subheader={"Чтобы начать пользоваться разделом заполни профиль и переключи тумблер 'Отображение профиля'."}
+                    actions={
+                        <Button size="l" mode="primary" onClick={() => {
+                            this.setActiveModal(null)
+                            this.go('settings')
+                        }}>
+                            Ох, ну начнём!
+                        </Button>
+                    }
+                />
+
+                <ModalCard
+                    id='settingsSaved'
+                    onClose={() => {
+                        this.setActiveModal(null)
+                    }}
+                    icon={<Icon56CheckCircleOutline/>}
+                    header="Настройки сохранены!"
+                    subheader={"Данные успешно сохранены. Ну что, найдем какую-нибудь сладкую мерси?"}
+                    actions={
+                        <Button size="l" mode="primary" onClick={() => {
+                            this.setActiveModal(null)
+                            this.goBack()
+                        }}>
+                            Погнали!
+                        </Button>
+                    }
+                />
+
+            </ModalRoot>
+        )
+        history.pushState(null, null)
+        return (
+            <ConfigProvider isWebView={true}>
+                <View activePanel={this.state.activePanel} modal={modal} popout={this.state.popout}
+                      onSwipeBack={this.goBack} history={this.state.history}>
+                    <Home id={ROUTES.HOME} go={this.go} subscribed={this.state.subscribed}
+                          clickOnLink={this.clickOnLink} arcadesHistory={this.state.arcadesHistory}
+                          saveScroll={this.saveScroll} getScroll={this.getScroll} arcades={this.state.arcades}
+                          user={this.state.user} snackbarError={this.state.snackbar}/>
+                    <Intro id={ROUTES.INTRO} go={this.viewIntro} user={this.state.user}
+                           snackbarError={this.state.snackbar}/>
+                    <Update id={ROUTES.UPDATE} go={this.go} clickOnLink={this.clickOnLink}/>
+                    <FAQ id={ROUTES.FAQ} go={this.go} clickOnLink={this.clickOnLink}/>
+                    <Screenshots id={ROUTES.SCREENSHOTS} go={this.go} clickOnLink={this.clickOnLink}/>
+                    <Arts id={ROUTES.ARTS} go={this.go} clickOnLink={this.clickOnLink}/>
+                    <Mems id={ROUTES.MEMS} go={this.go} clickOnLink={this.clickOnLink}/>
+                    <Randomgg id={ROUTES.RANDOMGG} go={this.go}/>
+                    <Gameprofile id={ROUTES.GAMEPROFILE} go={this.go} user={this.state.user}/>
+                    <FindTeammate id={ROUTES.FINDTEAMMATE} openTextPage={this.openTextPage} go={this.go}
+                                  user={this.state.user}
+                                  setActiveModal={this.setActiveModal} clickOnLink={this.clickOnLink}
+                                  snackbarError={this.state.snackbar}/>
+                    <Settings id={ROUTES.SETTINGS} go={this.go} setActiveModal={this.setActiveModal}/>
+                    <Textpage id={ROUTES.TEXTPAGE} title={this.state.textpage.title} text={this.state.textpage.text}
+                              button={this.state.textpage.button} link={this.state.textpage.link}
+                              success={this.state.textpage.success} go={this.goBack}/>
+                </View>
+            </ConfigProvider>
+        )
+    }
 
 }
 
-export default App;
+export default App

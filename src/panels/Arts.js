@@ -1,5 +1,4 @@
 import React from 'react';
-import bridge from '@vkontakte/vk-bridge';
 import {
 	Panel,
 	PanelHeader,
@@ -20,6 +19,8 @@ import {
 	Icon16Dropdown,
 	Icon24Done
 } from '@vkontakte/icons';
+
+import fetch2 from '../components/Fetch';
 
 class Arts extends React.Component {
     constructor (props) {
@@ -86,9 +87,7 @@ class Arts extends React.Component {
 		requestAnimationFrame(this.toggleContext);
 	}
 	componentDidMount() {
-		fetch('https://cloud.irbot.net/ow_arcade/api?act=loadWall&page=arts&' + window.location.href.slice(window.location.href.indexOf('?') + 1))
-			.then(response => response.json())
-			.then(data => {
+		fetch2('loadWall', 'page=arts').then(data => {
 				try {
 					for (let i = 0; i < data.result.length; i++) {
 						let rows = [];
@@ -129,7 +128,7 @@ class Arts extends React.Component {
 							Не удалось загрузить ленту артов
 						</Snackbar>});
 				}
-			})
+		})
 	}
 	componentWillUnmount() {
 		for	(let b = 0; b < this.state.groups.length; b++) {
@@ -141,7 +140,7 @@ class Arts extends React.Component {
 		let {id, go} = this.props;
 		return (
 		<Panel id={id}>
-			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>} >
+			<PanelHeader separator={false} left={<PanelHeaderBack onClick={() => go('home')} />} >
 				<PanelHeaderContent
 					aside={<Icon16Dropdown style={{ transform: `rotate(${this.state.contextOpened ? '180deg' : '0'})` }} />}
 					onClick={this.toggleContext}

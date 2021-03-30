@@ -32,7 +32,7 @@ class Update extends React.Component {
 		let {id, go} = this.props;
 		return (
 		<Panel id={id}>
-			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>} >
+			<PanelHeader separator={false} left={<PanelHeaderBack onClick={() => go('home')} />} >
 				Обновление
 			</PanelHeader>
 			<Div>
@@ -41,7 +41,7 @@ class Update extends React.Component {
 						<Title level="2" weight="heavy" style={{ marginBottom: 10 }}>Обрати внимание, что...</Title>
 						<Text weight="regular">Ивент "Лунный Новый год" уже закончился (25.02.2021). Однако эта страница будет существовать до начала следующего ивента "Архивы".</Text>
 					</Div>
-				</Card>	
+				</Card>
 			</Div>
 			<Group header={<Header mode="secondary">СКИНЫ ЗА ПОБЕДЫ</Header>}>
 				<CardScroll size="l">

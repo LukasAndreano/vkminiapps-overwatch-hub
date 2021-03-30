@@ -1,21 +1,21 @@
-import React from 'react';
-import Panel from '@vkontakte/vkui/dist/components/Panel/Panel';
-import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader';
-import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/PanelHeaderBack';
+import React from 'react'
+import Panel from '@vkontakte/vkui/dist/components/Panel/Panel'
+import PanelHeader from '@vkontakte/vkui/dist/components/PanelHeader/PanelHeader'
+import PanelHeaderBack from '@vkontakte/vkui/dist/components/PanelHeaderBack/PanelHeaderBack'
 import {
 	Group,
 	ContentCard,
 	CardGrid,
 	Div,
 	Button
-} from '@vkontakte/vkui';
+} from '@vkontakte/vkui'
 
 class FAQ extends React.Component {
 	render() {
-		let {id, go} = this.props;
+		let {id, go} = this.props
 		return (
 		<Panel id={id}>
-			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>} >
+			<PanelHeader separator={false} left={<PanelHeaderBack onClick={() => go('home')} />} >
 				FAQ
 			</PanelHeader>
 			<Group>
@@ -45,7 +45,7 @@ class FAQ extends React.Component {
 		              subtitle="ИНФОРМАЦИЯ ПРО ПРИЛОЖЕНИЕ"
 					  disabled
 		              header="Приложение"
-		              text="Текущая версия приложения: 1.2.1. Разработчик: Никита Балин"
+		              text="Текущая версия приложения: 1.3.0. Разработчик: Никита Балин"
 		              maxheight={200}
 		            />
 		        </CardGrid>
@@ -59,4 +59,4 @@ class FAQ extends React.Component {
 	}
 }
 
-export default FAQ;
+export default FAQ

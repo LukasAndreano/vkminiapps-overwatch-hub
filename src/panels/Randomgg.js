@@ -34,7 +34,7 @@ class Randomgg extends React.Component {
 		let {id, go} = this.props;
 		return (
 		<Panel id={id} centered={true} className="randomgg">
-			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>}>
+			<PanelHeader separator={false} left={<PanelHeaderBack onClick={() => go('home')} />}>
 				Случайный ГГ
 			</PanelHeader>
 			{this.state.name == null &&

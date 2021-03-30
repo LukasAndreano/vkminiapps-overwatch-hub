@@ -25,7 +25,7 @@ class Weeklyskin extends React.Component {
 		let {id, go} = this.props;
 		return (
 		<Panel id={id}>
-			<PanelHeader separator={false} left={<PanelHeaderBack onClick={go} data-to="home"/>} >
+			<PanelHeader separator={false} left={<PanelHeaderBack onClick={() => go('home')} />} >
 				Испытание
 			</PanelHeader>
 			<CardGrid size="l" style={{paddingTop: 15}}>
@@ -42,7 +42,7 @@ class Weeklyskin extends React.Component {
 			    />
 			</CardGrid>
 		    <Div>
-		      <Button size="l" stretched mode="secondary" onClick={go} data-to="home">Назад в меню</Button>
+		      <Button size="l" stretched mode="secondary" onClick={() => go('home')}>Назад в меню</Button>
 		    </Div>
 		</Panel>
 		)

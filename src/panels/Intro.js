@@ -16,7 +16,7 @@ import '../css/Intro.css';
 const Intro = ({id, snackbarError, user, userHasSeenIntro, go}) => {
 	return (
 		<Panel id={id} centered={true}>
-			{(!userHasSeenIntro && user) && 
+			{(!userHasSeenIntro && user) &&
 				<Fragment>
 					<Group>
 						<Confetti width={window.innerWidth} height={window.innerHeight} numberOfPieces={25} />

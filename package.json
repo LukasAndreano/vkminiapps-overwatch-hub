@@ -19,7 +19,7 @@
     "uglify-js-brunch": "^2.10.0"
   },
   "dependencies": {
-    "@vkontakte/icons": "^1.74.0",
+    "@vkontakte/icons": "^1.88.0",
     "@vkontakte/vk-bridge": "^2.4.0",
     "@vkontakte/vk-miniapps-deploy": "^0.0.17",
     "@vkontakte/vkjs": "^0.20.0",
