@@ -143,7 +143,7 @@ class Settings extends React.Component {
                         </FormItem>
 
                         <FormItem top="Твой возраст?">
-                            <Input type="tel" name="age" value={this.state.age}
+                            <Input inputMode="numeric" name="age" value={this.state.age}
                                    placeholder="Я ощущаю себя на 39, хотя мне 13!" required maxLength={2}
                                    onChange={(e) => {
                                        if (e.target.value.replace(/\D/g, "").substr(0, 1) == 0) {
