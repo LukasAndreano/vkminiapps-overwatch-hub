@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import bridge from '@vkontakte/vk-bridge'
 import smoothscroll from 'smoothscroll-polyfill'
 import queryString from 'query-string'
+import {platform} from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css'
 import {
     View,
@@ -119,6 +120,7 @@ class App extends React.Component {
         this.clickOnLink = this.clickOnLink.bind(this)
         this.setActiveModal = this.setActiveModal.bind(this)
         this.openTextPage = this.openTextPage.bind(this)
+        this.setSnackbar = this.setSnackbar.bind(this)
     }
 
     componentDidMount() {
@@ -158,14 +160,7 @@ class App extends React.Component {
                         })
                     })
                 } catch (err) {
-                    this.setState({
-                        snackbar: <Snackbar
-                            layout='vertical'
-                            onClose={() => this.setState({snackbar: null})}
-                            before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}>
-                            Не удалось загрузить информацию
-                        </Snackbar>
-                    })
+                    this.setSnackbar("Не удалось загрузить информацию", 2000)
                 }
             }
         })
@@ -183,13 +178,9 @@ class App extends React.Component {
 
         window.addEventListener('offline', () => {
             bridge.send('VKWebAppDisableSwipeBack')
+            this.setSnackbar("Потеряно соединение с интернетом", 1000)
             this.setState({
-                activePanel: ROUTES.HOME, online: false, history: ['home'], snackbar: <Snackbar
-                    layout='vertical'
-                    duration="1000"
-                    onClose={() => this.setState({snackbar: null})}>
-                    Потеряно соединение с интернетом
-                </Snackbar>
+                activePanel: ROUTES.HOME, online: false, history: ['home']
             })
         })
 
@@ -203,6 +194,18 @@ class App extends React.Component {
         // TODO: продумать момент с рекламой
         // bridge.send("VKWebAppShowNativeAds", {ad_format:"preloader"})
 
+    }
+
+    setSnackbar(text, duration) {
+        duration = duration || 4000
+        this.setState({
+            snackbar: <Snackbar
+                layout='vertical'
+                duration={duration}
+                onClose={() => this.setState({snackbar: null})}>
+                {text}
+            </Snackbar>
+        })
     }
 
     setActiveModal(activeModal, profileData) {
@@ -235,7 +238,7 @@ class App extends React.Component {
                     profile: profileData,
                     profileDataInfo: 'Загрузка...',
                 })
-            }, 500);
+            }, 300);
         } else {
             this.setState({
                 profile: profileData,
@@ -268,14 +271,7 @@ class App extends React.Component {
             })
             this.setState({activePanel: ROUTES.HOME})
         } catch (error) {
-            this.setState({
-                snackbar: <Snackbar
-                    layout='vertical'
-                    onClose={() => this.setState({snackbar: null})}
-                    before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}>
-                    Упс, что-то пошло не так...
-                </Snackbar>
-            })
+            this.setSnackbar("Упс, что-то пошло не так...", 2000)
         }
 
     }
@@ -296,40 +292,23 @@ class App extends React.Component {
                 document.body.style.overflow = "visible"
                 fetch2('verify').then(data => {
                     if (data.result !== 'ok') {
-                        this.setState({
-                            activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
-                                layout='vertical'
-                                onClose={() => this.setState({snackbar: null})}>
-                                Упс, что-то пошло не так...
-                            </Snackbar>
-                        })
+                        this.setSnackbar("Упс, что-то пошло не так...", 2000)
                     }
                 })
                     .catch(() => {
-                        this.setState({
-                            activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
-                                layout='vertical'
-                                onClose={() => this.setState({snackbar: null})}>
-                                Упс, что-то пошло не так...
-                            </Snackbar>
-                        })
+                        this.setSnackbar("Упс, что-то пошло не так...", 2000)
                     })
             }
         } else {
-            this.setState({
-                snackbar: <Snackbar
-                    layout='vertical'
-                    onClose={() => this.setState({snackbar: null})}>
-                    Нет соединения с интернетом
-                </Snackbar>
-            })
+            this.setSnackbar("Нет соединения с интернетом", 1000)
         }
     }
 
     goBack = () => {
+        if (this.state.activeModal !== null)
+            this.setActiveModal(null);
         if (this.state.activePanel == 'settings')
             this.setState({tab: 'profile'});
-        this.setActiveModal();
         const history = [...this.state.history]
         history.pop()
         const activePanel = history[history.length - 1]
@@ -341,9 +320,13 @@ class App extends React.Component {
     }
 
     AndroidBackButton = () => {
-        if (this.state.activePanel !== ROUTES.HOME && this.state.activePanel !== ROUTES.INTRO)
-            this.goBack()
-        else
+        if (this.state.activePanel !== ROUTES.HOME && this.state.activePanel !== ROUTES.INTRO) {
+            if (this.state.activeModal !== null) {
+                this.setActiveModal(null)
+            } else {
+                this.goBack()
+            }
+        } else
             bridge.send("VKWebAppClose", {"status": "success"})
     }
 
@@ -502,27 +485,10 @@ class App extends React.Component {
                     }
                 />
 
-                <ModalCard
-                    id='settingsSaved'
-                    onClose={() => {
-                        this.goBack('profile')
-                    }}
-                    icon={<Icon56CheckCircleOutline/>}
-                    header="Настройки сохранены!"
-                    subheader={"Данные успешно сохранены. Ну что, найдем какую-нибудь сладкую мерси?"}
-                    actions={
-                        <Button size="l" mode="primary" onClick={() => {
-                            this.goBack('profile')
-                            this.clickOnLink
-                        }}>
-                            Погнали!
-                        </Button>
-                    }
-                />
-
             </ModalRoot>
         )
-        history.pushState(null, null)
+        if (platform() !== 'ios')
+            history.pushState(null, null)
         return (
             <ConfigProvider isWebView={true}>
                 <View activePanel={this.state.activePanel} modal={modal} popout={this.state.popout}
@@ -530,21 +496,19 @@ class App extends React.Component {
                     <Home id={ROUTES.HOME} go={this.go} subscribed={this.state.subscribed}
                           clickOnLink={this.clickOnLink} arcadesHistory={this.state.arcadesHistory}
                           saveScroll={this.saveScroll} getScroll={this.getScroll} arcades={this.state.arcades}
-                          user={this.state.user} snackbarError={this.state.snackbar}/>
-                    <Intro id={ROUTES.INTRO} go={this.viewIntro} user={this.state.user}
-                           snackbarError={this.state.snackbar}/>
+                          user={this.state.user} setSnackbar={this.setSnackbar} snackbar={this.state.snackbar} />
+                    <Intro id={ROUTES.INTRO} go={this.viewIntro} user={this.state.user} />
                     <Update id={ROUTES.UPDATE} go={this.go} clickOnLink={this.clickOnLink}/>
                     <FAQ id={ROUTES.FAQ} go={this.go} clickOnLink={this.clickOnLink}/>
-                    <Screenshots id={ROUTES.SCREENSHOTS} go={this.go} clickOnLink={this.clickOnLink}/>
-                    <Arts id={ROUTES.ARTS} go={this.go} clickOnLink={this.clickOnLink}/>
-                    <Mems id={ROUTES.MEMS} go={this.go} clickOnLink={this.clickOnLink}/>
+                    <Screenshots id={ROUTES.SCREENSHOTS} setSnackbar={this.setSnackbar} snackbar={this.state.snackbar} go={this.go} clickOnLink={this.clickOnLink}/>
+                    <Arts id={ROUTES.ARTS} go={this.go} setSnackbar={this.setSnackbar} snackbar={this.state.snackbar} clickOnLink={this.clickOnLink}/>
+                    <Mems id={ROUTES.MEMS} go={this.go} setSnackbar={this.setSnackbar} snackbar={this.state.snackbar} clickOnLink={this.clickOnLink}/>
                     <Randomgg id={ROUTES.RANDOMGG} go={this.go}/>
                     <Gameprofile id={ROUTES.GAMEPROFILE} go={this.go} user={this.state.user}/>
                     <FindTeammate id={ROUTES.FINDTEAMMATE} tab={this.state.tab} openTextPage={this.openTextPage} go={this.go}
-                                  user={this.state.user}
-                                  setActiveModal={this.setActiveModal} clickOnLink={this.clickOnLink}
-                                  snackbarError={this.state.snackbar}/>
-                    <Settings id={ROUTES.SETTINGS} go={() => {this.goBack('profile')}} setActiveModal={this.setActiveModal}/>
+                                  user={this.state.user} setSnackbar={this.setSnackbar} snackbar={this.state.snackbar}
+                                  setActiveModal={this.setActiveModal} clickOnLink={this.clickOnLink} />
+                    <Settings id={ROUTES.SETTINGS} go={() => {this.goBack('profile')}} setSnackbar={this.setSnackbar} setActiveModal={this.setActiveModal}/>
                     <Textpage id={ROUTES.TEXTPAGE} title={this.state.textpage.title} text={this.state.textpage.text}
                               button={this.state.textpage.button} link={this.state.textpage.link}
                               success={this.state.textpage.success} go={this.goBack}/>

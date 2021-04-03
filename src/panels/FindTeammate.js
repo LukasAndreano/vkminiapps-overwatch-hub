@@ -38,7 +38,6 @@ class FindTeammate extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            snackbar: null,
             activeStory: 'feed',
             spinner: true,
             display: false,
@@ -293,7 +292,7 @@ class FindTeammate extends React.Component {
     }
 
     render() {
-        let {id, go, user} = this.props
+        let {id, go, user, snackbar} = this.props
         return (
             <Panel id={id} className="homePage">
                 <Epic activeStory={this.state.activeStory} tabbar={
@@ -410,7 +409,7 @@ class FindTeammate extends React.Component {
                         }
                     </Panel>
                 </Epic>
-                {this.state.snackbar}
+                {snackbar}
             </Panel>
         )
     }

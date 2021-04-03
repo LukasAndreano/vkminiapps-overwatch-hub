@@ -1,14 +1,11 @@
 import React from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import OverwatchDailyArcadeIcon from '../img/ow_arcade.jpg';
 import {
-    Avatar,
     Group,
     Header,
     PanelHeader,
     Panel,
     SimpleCell,
-    Snackbar,
     Switch,
     Card,
     Div,
@@ -44,7 +41,6 @@ class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            snackbar: null,
             arcades: [],
             subscribed: false,
             alert: null,
@@ -104,10 +100,7 @@ class Home extends React.Component {
                                 <ContentCard
                                     onError={(e) => {
                                         e.target.style.display = 'none';
-                                        this.setState({
-                                            snackbar: <Snackbar onClose={() => this.setState({snackbar: null})}>Произошла
-                                                ошибка при загрузке картинки в ленте. Повторите запрос позже.</Snackbar>
-                                        });
+                                        this.props.setSnackbar("Произошла ошибка при загрузке картинки в ленте. Повторите запрос позже.", 2000)
                                     }}
                                     image={img}
                                     text={el.text}
@@ -126,13 +119,7 @@ class Home extends React.Component {
                     this.setState(this.state.groups[i].rows);
                 }
             } catch (err) {
-                this.setState({
-                    snackbar: <Snackbar
-                        layout='vertical'
-                        onClose={() => this.setState({snackbar: null})}>
-                        Не удалось загрузить ленту новостей
-                    </Snackbar>
-                });
+                this.props.setSnackbar("Не удалось загрузить ленту новостей", 2000)
             }
         })
         setTimeout(() => {
@@ -165,14 +152,9 @@ class Home extends React.Component {
         if (subscribed == true) {
             fetch2('unsubscribe').then(() => {
                 bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
+                this.props.setSnackbar("Рассылка отключена", 2000)
                 this.setState({
-                    subscribed: false, changed: true, snackbar:
-                        <Snackbar
-                            onClose={() => this.setState({snackbar: null})}
-                            before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}
-                        >
-                            Рассылка отключена
-                        </Snackbar>
+                    subscribed: false, changed: true
                 });
             })
         } else {
@@ -180,29 +162,13 @@ class Home extends React.Component {
                 .then(() => {
                     fetch2('subscribe').then(() => {
                         bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
-                        this.setState({
-                            subscribed: true, changed: true, snackbar:
-                                <Snackbar
-                                    onClose={() => this.setState({snackbar: null})}
-                                    before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}
-                                >
-                                    Рассылка активирована
-                                </Snackbar>
-                        });
+                        this.props.setSnackbar("Рассылка активирована 🥳", 2000)
                     });
                 })
                 .catch(err => {
                     bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
                     this.setState({subscribed: false, changed: true, alert: false});
-                    this.setState({
-                        snackbar:
-                            <Snackbar
-                                onClose={() => this.setState({snackbar: null})}
-                                before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}
-                            >
-                                Подписка на рассылку отменена
-                            </Snackbar>
-                    });
+                    this.props.setSnackbar("Подписка на рассылку отменена", 2000)
                 });
         }
     }
@@ -237,7 +203,7 @@ class Home extends React.Component {
     }
 
     render() {
-        let {id, go, snackbarError} = this.props;
+        let {id, go, snackbar} = this.props;
         return (
             <Panel id={id} className="homePage">
                 <Epic activeStory={this.state.activeStory} tabbar={
@@ -358,8 +324,7 @@ class Home extends React.Component {
                         </Div>
                     </Panel>
                 </Epic>
-                {this.state.snackbar}
-                {snackbarError}
+                {snackbar}
             </Panel>
         )
     }

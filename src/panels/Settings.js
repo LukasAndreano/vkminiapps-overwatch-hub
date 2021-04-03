@@ -67,7 +67,10 @@ class Settings extends React.Component {
             } else {
                 fetch2('teammates.setSettings', 'type=main&about=' + encodeURI(this.state.about.trim()) + '&microphone=' + encodeURI(this.state.micro) + '&age=' + encodeURI(this.state.age.trim()) + '&time1=' + encodeURI(this.state.playtime[0]) + '&time2=' + encodeURI(this.state.playtime[1]) + '&discord=' + encodeURI(this.state.discord.replace(/#/g, '-').trim())).then(data => {
                     if (data.result === 'ok') {
-                        this.props.setActiveModal('settingsSaved');
+                        setTimeout(() => {
+                            this.props.setSnackbar("Настройки успешно сохранены!", 2000)
+                        }, 500)
+                        this.props.go('findteammate')
                         bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
                     } else if (data.result === 'cooldown') {
                         this.setState({

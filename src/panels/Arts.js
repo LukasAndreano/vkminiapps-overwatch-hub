@@ -11,7 +11,6 @@ import {
 	CardGrid,
 	List,
 	Cell,
-	Snackbar,
 	ScreenSpinner
 } from '@vkontakte/vkui';
 
@@ -26,7 +25,6 @@ class Arts extends React.Component {
     constructor (props) {
       super(props);
       this.state = {
-		snackbar: null,
 		spinner: true,
 		contextOpened: false,
       	mode: 'tab1',
@@ -105,8 +103,7 @@ class Arts extends React.Component {
 								   target="_blank"
 								   href={"https://vk.com/" + this.state.groups[i].link + this.state.groups[i].id + "?w=wall-" + this.state.groups[i].id + "_" + el.id}>
 									<ContentCard
-										onError={(e) => {e.target.style.display = 'none'; this.setState({snackbar: <Snackbar onClose={() => this.setState({ snackbar: null })}>Произошла ошибка при загрузке картинки в ленте. Повторите запрос позже.</Snackbar>
-										});}}
+										onError={(e) => {e.target.style.display = 'none'; this.props.setSnackbar("Не удалось загрузить ленту 😐", 2000)}}
 										image={img}
 										text={el.text}
 										caption={this.state.groups[i].name}
@@ -125,11 +122,7 @@ class Arts extends React.Component {
 					}
 					this.setState({ spinner: false });
 				} catch (err) {
-					this.setState({snackbar: <Snackbar
-							layout='vertical'
-							onClose={() => this.setState({snackbar: null})}>
-							Не удалось загрузить ленту артов
-						</Snackbar>});
+					this.props.setSnackbar("Не удалось загрузить ленту 😐", 2000)
 				}
 		})
 	}
@@ -140,7 +133,7 @@ class Arts extends React.Component {
 		}
 	}
 	render() {
-		let {id, go} = this.props;
+		let {id, go, snackbar} = this.props;
 		return (
 		<Panel id={id}>
 			<PanelHeader separator={false} left={<PanelHeaderBack onClick={() => go('home')} />} >
@@ -210,7 +203,7 @@ class Arts extends React.Component {
 					</CardGrid>
 			  </Group>
 			  }
-          	{this.state.snackbar}
+          	{snackbar}
 		</Panel>
 		)
 	}

@@ -11,7 +11,6 @@ import {
     CardGrid,
     List,
     Cell,
-    Snackbar,
     ScreenSpinner,
 } from '@vkontakte/vkui';
 
@@ -26,7 +25,6 @@ class Screenshots extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            snackbar: null,
             spinner: true,
             contextOpened: false,
             mode: 'tab1',
@@ -88,11 +86,7 @@ class Screenshots extends React.Component {
                                 <ContentCard
                                     onError={(e) => {
                                         e.target.style.display = 'none';
-                                        this.setState({
-                                            snackbar: <Snackbar onClose={() => this.setState({snackbar: null})}>Произошла
-                                                ошибка при загрузке картинки в ленте. Повторите запрос
-                                                позже.</Snackbar>
-                                        });
+                                        this.props.setSnackbar("Произошла ошибка при загрузке картинки в ленте. Повторите запрос позже", 2000)
                                     }}
                                     image={img}
                                     text={el.text}
@@ -112,13 +106,7 @@ class Screenshots extends React.Component {
                 }
                 this.setState({spinner: false});
             } catch (err) {
-                this.setState({
-                    snackbar: <Snackbar
-                        layout='vertical'
-                        onClose={() => this.setState({snackbar: null})}>
-                        Не удалось загрузить ленту скриншотов
-                    </Snackbar>
-                });
+                this.props.setSnackbar("Не удалось загрузить ленту 😐", 2000)
             }
         })
     }
@@ -131,7 +119,7 @@ class Screenshots extends React.Component {
     }
 
     render() {
-        let {id, go} = this.props;
+        let {id, go, snackbar} = this.props;
         return (
             <Panel id={id}>
                 <PanelHeader separator={false} left={<PanelHeaderBack onClick={() => go('home')} />}>
@@ -178,7 +166,7 @@ class Screenshots extends React.Component {
                     </CardGrid>
                 </Group>
                 }
-                {this.state.snackbar}
+                {snackbar}
             </Panel>
         )
     }
