@@ -59,6 +59,7 @@ class Gameprofile extends React.Component {
                     } catch (err) {
                         this.setState({
                             snackbar: <Snackbar
+                                className="noMarginSnackbar"
                                 layout='vertical'
                                 onClose={() => this.setState({snackbar: null})}>
                                 Не удалось загрузить информацию по профилю
@@ -73,6 +74,7 @@ class Gameprofile extends React.Component {
             this.setState({
                 snackbar: <Snackbar
                     layout='vertical'
+                    className="noMarginSnackbar"
                     onClose={() => this.setState({snackbar: null})}
                     before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}>
                     Не удалось загрузить информацию
@@ -107,6 +109,7 @@ class Gameprofile extends React.Component {
                                     this.setState({
                                         request: true, snackbar:
                                             <Snackbar
+                                                className="noMarginSnackbar"
                                                 onClose={() => this.setState({snackbar: null})}>
                                                 Мы отправили тебе сообщение с ссылкой. Проверь личку, пожалуйста.
                                             </Snackbar>
@@ -114,6 +117,7 @@ class Gameprofile extends React.Component {
                                 } else {
                                     this.setState({
                                         snackbar: <Snackbar
+                                            className="noMarginSnackbar"
                                             layout='vertical'
                                             onClose={() => this.setState({snackbar: null})}>
                                             Мы уже отправляли тебе сообщение. Проверь личку.
@@ -124,6 +128,7 @@ class Gameprofile extends React.Component {
                         } catch (err) {
                             this.setState({
                                 snackbar: <Snackbar
+                                    className="noMarginSnackbar"
                                     layout='vertical'
                                     onClose={() => this.setState({snackbar: null})}>
                                     Не удалось отправить сообщение
@@ -136,6 +141,7 @@ class Gameprofile extends React.Component {
                         this.setState({
                             allow_messages_request: true, snackbar:
                                 <Snackbar
+                                    className="noMarginSnackbar"
                                     onClose={() => this.setState({snackbar: null})}
                                     before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}
                                 >
@@ -151,6 +157,7 @@ class Gameprofile extends React.Component {
         if (this.state.request === true) {
             this.setState({
                 snackbar: <Snackbar
+                    className="noMarginSnackbar"
                     layout='vertical'
                     onClose={() => this.setState({snackbar: null})}
                     before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}>
@@ -161,6 +168,7 @@ class Gameprofile extends React.Component {
         if (this.state.allow_messages_request === true) {
             this.setState({
                 snackbar: <Snackbar
+                    className="noMarginSnackbar"
                     layout='vertical'
                     onClose={() => this.setState({snackbar: null})}
                     before={<Avatar src={OverwatchDailyArcadeIcon} size={32}/>}>

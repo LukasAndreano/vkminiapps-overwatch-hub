@@ -11,7 +11,6 @@ import {
     SimpleCell,
     Switch,
     Card,
-    Banner,
     Div,
     ContentCard,
     MiniInfoCell,
@@ -23,7 +22,6 @@ import {
 } from '@vkontakte/vkui'
 import {
     Icon28NewsfeedOutline,
-    Icon28LikeOutline,
     Icon20ArticleOutline,
     Icon28ArticleOutline,
     Icon12Verified,
@@ -34,7 +32,6 @@ import {
     Icon28ChevronRightOutline,
     Icon28EditOutline,
     Icon28GhostOutline,
-    Icon56LikeOutline,
 } from '@vkontakte/icons'
 
 class FindTeammate extends React.Component {
@@ -72,7 +69,7 @@ class FindTeammate extends React.Component {
                 if (el.verified != false)
                     verified = <Icon12Verified fill="#4cad64"/>
                     wall.push(
-                    <Card key={el.id} style={{paddingBottom: 5, marginBottom: 10}} onClick={() => {
+                    <Card className="tap" key={el.id} style={{paddingBottom: 5, marginBottom: 10}} onClick={() => {
                     this.props.setActiveModal('profile', {
                         avatar: el.avatar,
                         user_id: el.user_id,
@@ -83,7 +80,8 @@ class FindTeammate extends React.Component {
                         verified: verified,
                         discord: el.discord,
                         age: el.age,
-                        playtime: el.playtime,
+                        time1: el.time1,
+                        time2: el.time2,
                         microphone: el.microphone,
                     })
                 }}>
@@ -124,6 +122,11 @@ class FindTeammate extends React.Component {
     }
 
     componentDidMount() {
+        setTimeout(() => {
+            if (this.props.tab === 'profile') {
+                this.setState({activeStory: "profile"})
+            }
+        }, 600);
         fetch2('teammates.getProfile').then(data => {
             if (data.result === 'created')
                 this.props.setActiveModal('start1')
@@ -133,6 +136,7 @@ class FindTeammate extends React.Component {
                     display: true,
                     switches: {
                         displayInSearch: <Switch onChange={() => {
+                            this.props.clickOnLink()
                             this.Switch('display')
                         }} defaultChecked/>
                     }
@@ -141,6 +145,7 @@ class FindTeammate extends React.Component {
                 this.setState({
                     switches: {
                         displayInSearch: <Switch onChange={() => {
+                            this.props.clickOnLink()
                             this.Switch('display')
                         }}/>
                     }
@@ -151,6 +156,7 @@ class FindTeammate extends React.Component {
                     profileTag: true,
                     switches: {
                         profileTag: <Switch onChange={() => {
+                            this.props.clickOnLink()
                             this.Switch('profileTag')
                         }} defaultChecked/>,
                         displayInSearch: this.state.switches.displayInSearch,
@@ -160,6 +166,7 @@ class FindTeammate extends React.Component {
                 this.setState({
                     switches: {
                         profileTag: <Switch onChange={() => {
+                            this.props.clickOnLink()
                             this.Switch('profileTag')
                         }}/>,
                         displayInSearch: this.state.switches.displayInSearch,
@@ -177,7 +184,7 @@ class FindTeammate extends React.Component {
                         if (el.verified != false)
                             verified = <Icon12Verified fill="#4cad64"/>
                         wall.push(
-                            <Card key={el.id} style={{paddingBottom: 5, marginBottom: 10}} onClick={() => {
+                            <Card className="tap" key={el.id} style={{paddingBottom: 5, marginBottom: 10}} onClick={() => {
                                 this.props.setActiveModal('profile', {
                                     avatar: el.avatar,
                                     user_id: el.user_id,
@@ -188,7 +195,8 @@ class FindTeammate extends React.Component {
                                     verified: verified,
                                     discord: el.discord,
                                     age: el.age,
-                                    playtime: el.playtime,
+                                    time1: el.time1,
+                                    time2: el.time2,
                                     microphone: el.microphone,
                                 })
                             }}>
@@ -233,27 +241,47 @@ class FindTeammate extends React.Component {
         switch (type) {
             case 'display':
                 if (this.state.display === true) {
-                    fetch2('teammates.setSettings', 'type=display&display=0').then(() => {
-                        bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"})
-                        this.props.openTextPage("Эм, окей!", "Твой профиль скрыт из ленты", "Окей, спасибо!", "findteammate", true)
+                    fetch2('teammates.setSettings', 'type=display&display=0').then((data) => {
+                        if (data.result === 'ok') {
+                            bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"})
+                            this.props.openTextPage("Эм, окей!", "Твой профиль скрыт из ленты", "Окей, спасибо!", "findteammate", true)
+                        } else if (data.result === 'cooldown') {
+                            bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"})
+                            this.props.openTextPage("Эй, притормози!", "Переключать тумблеры можно раз в 5 секунд!", "Ладно-ладно!", "findteammate", false)
+                        }
                     })
                 } else {
-                    fetch2('teammates.setSettings', 'type=display&display=1').then(() => {
-                        bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"})
-                        this.props.openTextPage("Вжух!", "Теперь твой профиль видят другие люди в ленте. К тому же, теперь тебе доступна эта самая лента.", "Круто!", "findteammate", true)
+                    fetch2('teammates.setSettings', 'type=display&display=1').then((data) => {
+                        if (data.result === 'ok') {
+                            bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"})
+                            this.props.openTextPage("Вжух!", "Теперь твой профиль видят другие люди в ленте. К тому же, теперь тебе доступна эта самая лента.", "Круто!", "findteammate", true)
+                        } else if (data.result === 'cooldown') {
+                            bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"})
+                            this.props.openTextPage("Эй, притормози!", "Переключать тумблеры можно раз в 5 секунд!", "Ладно-ладно!", "findteammate", false)
+                        }
                     })
                 }
                 break
             case 'profileTag':
                 if (this.state.profileTag === true) {
-                    fetch2('teammates.setSettings', 'type=tag&tag=0').then(() => {
-                        bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"})
-                        this.props.openTextPage("А - анонимность", "Теперь твой батлнет-тег никто не увидит.", "Да я знаю, лол", "findteammate", true)
+                    fetch2('teammates.setSettings', 'type=tag&tag=0').then((data) => {
+                        if (data.result === 'ok') {
+                            bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"})
+                            this.props.openTextPage("А - анонимность", "Теперь твой батлнет-тег никто не увидит.", "Да я знаю, лол", "findteammate", true)
+                        } else if (data.result === 'cooldown') {
+                            bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"})
+                            this.props.openTextPage("Эй, притормози!", "Переключать тумблеры можно раз в 5 секунд!", "Ладно-ладно!", "findteammate", false)
+                        }
                     })
                 } else {
-                    fetch2('teammates.setSettings', 'type=tag&tag=1').then(() => {
-                        bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"})
-                        this.props.openTextPage("Включили, проверяй!", "Теперь любой человек в ленте увидит твой батлнет-тег.", "Понятненько", "findteammate", true)
+                    fetch2('teammates.setSettings', 'type=tag&tag=1').then((data) => {
+                        if (data.result === 'ok') {
+                            bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"})
+                            this.props.openTextPage("Включили, проверяй!", "Теперь любой человек в ленте увидит твой батлнет-тег.", "Понятненько", "findteammate", true)
+                        } else if (data.result === 'cooldown') {
+                            bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"})
+                            this.props.openTextPage("Эй, притормози!", "Переключать тумблеры можно раз в 5 секунд!", "Ладно-ладно!", "findteammate", false)
+                        }
                     })
                 }
                 break
@@ -270,7 +298,10 @@ class FindTeammate extends React.Component {
             <Panel id={id} className="homePage">
                 <Epic activeStory={this.state.activeStory} tabbar={
                     <Tabbar>
-                        <TabbarItem
+                    {this.state.spinner === true && <ScreenSpinner size='large'/>}
+                    {this.state.spinner === false &&
+                        <>
+                            <TabbarItem
                             selected={this.state.activeStory === 'feed'}
                             data-story="feed"
                             onClick={this.openPage}
@@ -282,10 +313,12 @@ class FindTeammate extends React.Component {
                             onClick={this.openPage}
                             text="Профиль"
                         ><Icon28Profile/></TabbarItem>
+                        </>
+                    }
                     </Tabbar>}>
                     <Panel id="feed" activeStory="feed">
-                        <PanelHeader separator={false}
-                                     left={<PanelHeaderBack onClick={() => go('home')}/>}>Лента</PanelHeader>
+                        {this.state.spinner ? <PanelHeader separator={false}>Загрузка...</PanelHeader> : <PanelHeader separator={false}
+                                     left={<PanelHeaderBack onClick={() => go('home')}/>}>Лента</PanelHeader>}
                         <PullToRefresh onRefresh={this.onRefresh} isFetching={this.state.fetching}>
                             {this.state.spinner === true && <ScreenSpinner size='large'/>}
                             {this.state.spinner === false &&
@@ -304,7 +337,7 @@ class FindTeammate extends React.Component {
                         </PullToRefresh>
                     </Panel>
                     <Panel id="profile" activeStory="profile">
-                        <PanelHeader separator={false}>Профиль</PanelHeader>
+                    {this.state.spinner ? <PanelHeader separator={false}>Загрузка...</PanelHeader> : <PanelHeader separator={false}>Профиль</PanelHeader>}
                         {this.state.spinner === true && <ScreenSpinner size='large'/>}
                         {this.state.spinner === false &&
                         <Div>
@@ -356,6 +389,7 @@ class FindTeammate extends React.Component {
                                 <SimpleCell before={<Icon28GhostOutline/>}
                                             description="Недоступно, пока не заполнен профиль"
                                             onClick={() => {
+                                                this.props.clickOnLink()
                                                 go('settings')
                                             }}
                                             after={<Switch disabled />}>Отображение

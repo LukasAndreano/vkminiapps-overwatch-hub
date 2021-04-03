@@ -79,9 +79,10 @@ class App extends React.Component {
             arcades: null,
             history: ['home'],
             subscribed: null,
+            tab: null,
             activeModal: null,
             modalHistory: [],
-            profileDataInfo: 'Загружаем данные игрового профиля...',
+            profileDataInfo: 'Загрузка...',
             // scroll[0] - home screen, news tab | scroll[1] - home screen, arcades tab
             scrolls: [
                 {scroll: 0},
@@ -185,6 +186,7 @@ class App extends React.Component {
             this.setState({
                 activePanel: ROUTES.HOME, online: false, history: ['home'], snackbar: <Snackbar
                     layout='vertical'
+                    duration="1000"
                     onClose={() => this.setState({snackbar: null})}>
                     Потеряно соединение с интернетом
                 </Snackbar>
@@ -193,15 +195,13 @@ class App extends React.Component {
 
         window.addEventListener('online', () => {
             this.setState({
-                online: true, snackbar: <Snackbar
-                    layout='vertical'
-                    onClose={() => this.setState({snackbar: null})}>
-                    Соединение восстановлено
-                </Snackbar>
+                online: true
             })
+            this.openTextPage("Оу, кто вернулся?", "Теперь ты можешь продолжить наслаждаться приложением!", 'Окей, понятно', 'home', true);
         })
 
-        bridge.send("VKWebAppShowNativeAds", {ad_format:"preloader"})
+        // TODO: продумать момент с рекламой
+        // bridge.send("VKWebAppShowNativeAds", {ad_format:"preloader"})
 
     }
 
@@ -229,19 +229,34 @@ class App extends React.Component {
                 })
             }, 300);
         }
+        if (profileData.user_id === undefined) {
+            setTimeout(() => {
+                this.setState({
+                    profile: profileData,
+                    profileDataInfo: 'Загрузка...',
+                })
+            }, 500);
+        } else {
+            this.setState({
+                profile: profileData,
+                profileDataInfo: 'Загрузка...',
+            })
+        }
+
         let modalHistory = this.state.modalHistory ? [...this.state.modalHistory] : []
 
         if (activeModal === null) {
+            document.body.style.overflow = "visible";
             modalHistory = []
         } else if (modalHistory.indexOf(activeModal) !== -1) {
             modalHistory = modalHistory.splice(0, modalHistory.indexOf(activeModal) + 1)
         } else {
+            document.body.style.overflow = "hidden";
             modalHistory.push(activeModal)
         }
         this.setState({
             activeModal,
             modalHistory,
-            profile: profileData,
         })
     }
 
@@ -267,35 +282,39 @@ class App extends React.Component {
 
     go(panel) {
         if (this.state.online === true) {
-            const history = [...this.state.history]
-            history.push(panel)
-            if (panel === 'home') {
-                bridge.send('VKWebAppDisableSwipeBack')
-                this.setState({history: ['home'], activePanel: panel})
+            if (this.state.activeModal !== null) {
+                this.setActiveModal(null);
             } else {
-                this.setState({history: history, activePanel: panel})
-            }
-            document.body.style.overflow = "visible"
-            fetch2('verify').then(data => {
-                if (data.result !== 'ok') {
-                    this.setState({
-                        activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
-                            layout='vertical'
-                            onClose={() => this.setState({snackbar: null})}>
-                            Упс, что-то пошло не так...
-                        </Snackbar>
-                    })
+                const history = [...this.state.history]
+                history.push(panel)
+                if (panel === 'home') {
+                    bridge.send('VKWebAppDisableSwipeBack')
+                    this.setState({history: ['home'], activePanel: panel, tab: null})
+                } else {
+                    this.setState({history: history, activePanel: panel, tab: null})
                 }
-            })
-                .catch(() => {
-                    this.setState({
-                        activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
-                            layout='vertical'
-                            onClose={() => this.setState({snackbar: null})}>
-                            Упс, что-то пошло не так...
-                        </Snackbar>
-                    })
+                document.body.style.overflow = "visible"
+                fetch2('verify').then(data => {
+                    if (data.result !== 'ok') {
+                        this.setState({
+                            activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
+                                layout='vertical'
+                                onClose={() => this.setState({snackbar: null})}>
+                                Упс, что-то пошло не так...
+                            </Snackbar>
+                        })
+                    }
                 })
+                    .catch(() => {
+                        this.setState({
+                            activePanel: ROUTES.HOME, subscribed: null, snackbar: <Snackbar
+                                layout='vertical'
+                                onClose={() => this.setState({snackbar: null})}>
+                                Упс, что-то пошло не так...
+                            </Snackbar>
+                        })
+                    })
+            }
         } else {
             this.setState({
                 snackbar: <Snackbar
@@ -307,8 +326,10 @@ class App extends React.Component {
         }
     }
 
-
     goBack = () => {
+        if (this.state.activePanel == 'settings')
+            this.setState({tab: 'profile'});
+        this.setActiveModal();
         const history = [...this.state.history]
         history.pop()
         const activePanel = history[history.length - 1]
@@ -372,8 +393,8 @@ class App extends React.Component {
                             {this.state.profile.text}
                             <br/><br/>
                             Возраст: {this.state.profile.age} <br/>
-                            Игровое время: {this.state.profile.playtime} <br/>
-                            Микрофон: {this.state.profile.microphone ? "Да" : "Нет"} <br/>
+                            Игровое время: с {this.state.profile.time1}:00 до {this.state.profile.time2}:00 по МСК <br/>
+                            Микрофон: {this.state.profile.microphone == 1 && "Да"} {this.state.profile.microphone == 0 && "Нет"} <br/>
                             Discord: {this.state.profile.discord ? this.state.profile.discord.replace(/-/g, '#') : "Не привязан"} <br/>
                             <br/>
                             {this.state.profileDataInfo}
@@ -398,7 +419,7 @@ class App extends React.Component {
                     </div>
                     }
                     actions={
-                        <Button size="l" mode="primary" href={"https://vk.com/write" + this.state.profile.user_id} target="_blank">
+                        <Button size="l" onClick={() => {this.clickOnLink}} className="fixButton" mode="primary" href={"https://vk.com/write" + this.state.profile.user_id} target="_blank">
                             Написать в личку
                         </Button>
                     }
@@ -417,6 +438,7 @@ class App extends React.Component {
                     actions={
                         <Button size="l" mode="primary" onClick={() => {
                             this.setActiveModal('start2')
+                            this.clickOnLink
                         }}>
                             Окей, начнём
                         </Button>
@@ -434,6 +456,7 @@ class App extends React.Component {
                     actions={
                         <Button size="l" mode="primary" onClick={() => {
                             this.setActiveModal('start3')
+                            this.clickOnLink
                         }}>
                             Оки, не буду материться
                         </Button>
@@ -451,6 +474,7 @@ class App extends React.Component {
                     actions={
                         <Button size="l" mode="primary" onClick={() => {
                             this.setActiveModal('start4')
+                            this.clickOnLink
                         }}>
                             Ясно-понятно!
                         </Button>
@@ -471,6 +495,7 @@ class App extends React.Component {
                         <Button size="l" mode="primary" onClick={() => {
                             this.setActiveModal(null)
                             this.go('settings')
+                            this.clickOnLink
                         }}>
                             Ох, ну начнём!
                         </Button>
@@ -480,15 +505,15 @@ class App extends React.Component {
                 <ModalCard
                     id='settingsSaved'
                     onClose={() => {
-                        this.setActiveModal(null)
+                        this.goBack('profile')
                     }}
                     icon={<Icon56CheckCircleOutline/>}
                     header="Настройки сохранены!"
                     subheader={"Данные успешно сохранены. Ну что, найдем какую-нибудь сладкую мерси?"}
                     actions={
                         <Button size="l" mode="primary" onClick={() => {
-                            this.setActiveModal(null)
-                            this.goBack()
+                            this.goBack('profile')
+                            this.clickOnLink
                         }}>
                             Погнали!
                         </Button>
@@ -515,11 +540,11 @@ class App extends React.Component {
                     <Mems id={ROUTES.MEMS} go={this.go} clickOnLink={this.clickOnLink}/>
                     <Randomgg id={ROUTES.RANDOMGG} go={this.go}/>
                     <Gameprofile id={ROUTES.GAMEPROFILE} go={this.go} user={this.state.user}/>
-                    <FindTeammate id={ROUTES.FINDTEAMMATE} openTextPage={this.openTextPage} go={this.go}
+                    <FindTeammate id={ROUTES.FINDTEAMMATE} tab={this.state.tab} openTextPage={this.openTextPage} go={this.go}
                                   user={this.state.user}
                                   setActiveModal={this.setActiveModal} clickOnLink={this.clickOnLink}
                                   snackbarError={this.state.snackbar}/>
-                    <Settings id={ROUTES.SETTINGS} go={this.go} setActiveModal={this.setActiveModal}/>
+                    <Settings id={ROUTES.SETTINGS} go={() => {this.goBack('profile')}} setActiveModal={this.setActiveModal}/>
                     <Textpage id={ROUTES.TEXTPAGE} title={this.state.textpage.title} text={this.state.textpage.text}
                               button={this.state.textpage.button} link={this.state.textpage.link}
                               success={this.state.textpage.success} go={this.goBack}/>

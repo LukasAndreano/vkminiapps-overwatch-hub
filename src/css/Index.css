@@ -18,22 +18,33 @@ input, input:before, input:after {
 }
 a,a:hover,a:active {
 	text-decoration: none;
+	color: var(--text_primary);
+}
+.fixButton,.fixButton:hover,.fixButton:active {
+	text-decoration: none;
 	color: var(--button_primary_foreground);
 }
 .FixedLayout--android {
 	top: 0;
 }
 .WelcomeBlock .Avatar {
-	padding-bottom: 20px;;
+	padding-bottom: 20px;
 }
 .Tappable--android .SimpleCell--android .PanelHeaderContext--opened  {
 	margin-top: 60px !important;
 }
+.Tabbar {
+	z-index: 3;
+}
+.Snackbar {
+	margin-bottom: 50px;
+	z-index: 2;
+}
+.noMarginSnackbar {
+	margin-bottom: 0 !important;
+}
 .Div .SimpleCell {
 	border-radius: 15px;
-}
-.homePage .Snackbar {
-	bottom: 50px;
 }
 .content {
 	width: 100%;
@@ -50,4 +61,7 @@ a,a:hover,a:active {
 	padding: 0 10px;
 	color: #f2f2f2;
 	font-size: 15px;
+}
+.tap:hover {
+	cursor: pointer;
 }

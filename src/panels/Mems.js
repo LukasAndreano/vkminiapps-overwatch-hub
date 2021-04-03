@@ -62,7 +62,10 @@ class Mems extends React.Component {
 	select(e) {
 		window.scroll({top: 0, left: 0, behavior: 'smooth'});
 		const mode = e.currentTarget.dataset.mode;
-		this.setState({mode});
+		this.setState({ mode, spinner: true });
+		setTimeout(() => {
+			this.setState({spinner: false})
+		}, 500)
 		requestAnimationFrame(this.toggleContext);
 	}
 
