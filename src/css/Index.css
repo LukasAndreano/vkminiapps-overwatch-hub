@@ -65,3 +65,6 @@ a,a:hover,a:active {
 .tap:hover {
 	cursor: pointer;
 }
+.ModalCard__in {
+	width: 95%;
+}

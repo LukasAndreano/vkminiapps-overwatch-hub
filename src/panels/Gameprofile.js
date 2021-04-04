@@ -105,7 +105,7 @@ class Gameprofile extends React.Component {
                         try {
                             fetch2('connectaccount').then(data => {
                                 if (data.result === 'ok') {
-                                    bridge.send("VKWebAppTapticNotificationOccurred", {"type": "success"});
+                                    this.props.tapticEngine();
                                     this.setState({
                                         request: true, snackbar:
                                             <Snackbar
@@ -136,8 +136,8 @@ class Gameprofile extends React.Component {
                             })
                         }
                     })
-                    .catch(error => {
-                        bridge.send("VKWebAppTapticNotificationOccurred", {"type": "error"});
+                    .catch(() => {
+                        this.props.tapticEngine('error')
                         this.setState({
                             allow_messages_request: true, snackbar:
                                 <Snackbar
@@ -231,7 +231,7 @@ class Gameprofile extends React.Component {
                             </Card>
                             <Card>
                                 <MiniInfoCell textWrap="full" style={{marginTop: 10}}>
-                                    Открыть профиль можно в настройках -> общение -> отображение профиля (поставить:
+                                    Открыть профиль можно в настройках - общение - отображение профиля (поставить:
                                     открытый)
                                 </MiniInfoCell>
                             </Card>
