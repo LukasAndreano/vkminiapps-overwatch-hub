@@ -58,82 +58,86 @@ class FindTeammate extends React.Component {
 
   onRefresh() {
     this.setState({ fetching: true });
+    if (this.state.profile[0].display == true) {
 
-    fetch2("teammates.getWall").then((data) => {
-      let wall = [];
-      data.result.map((el) => {
-        let tag = "Профиль скрыт или отсутствует";
-        let verified = "";
-        if (
-          el.tag != false &&
-          el.battletag !== undefined &&
-          el.battletag !== null
-        )
-          tag = el.battletag;
-        if (el.verified != false) verified = <Icon12Verified fill="#4cad64" />;
-        wall.push(
-          <Card
-            className="tap"
-            key={el.id}
-            style={{ paddingBottom: 5, marginBottom: 10 }}
-            onClick={() => {
-              this.props.setActiveModal("profile", {
-                avatar: el.avatar,
-                user_id: el.user_id,
-                name: el.name,
-                text: el.description,
-                battletag: el.battletag,
-                tag: tag,
-                verified: verified,
-                discord: el.discord,
-                age: el.age,
-                time1: el.time1,
-                time2: el.time2,
-                microphone: el.microphone,
-              });
-            }}
-          >
-            <SimpleCell
-              disabled
-              description={tag}
-              after={<Icon28ChevronRightOutline />}
-              badge={verified}
-              before={<Avatar size={40} src={el.avatar} />}
+      fetch2("teammates.getWall").then((data) => {
+        let wall = [];
+        data.result.map((el) => {
+          let tag = "Профиль скрыт или отсутствует";
+          let verified = "";
+          if (
+            el.tag != false &&
+            el.battletag !== undefined &&
+            el.battletag !== null
+          )
+            tag = el.battletag;
+          if (el.verified != false) verified = <Icon12Verified fill="#4cad64" />;
+          wall.push(
+            <Card
+              className="tap"
+              key={el.id}
+              style={{ paddingBottom: 5, marginBottom: 10 }}
+              onClick={() => {
+                this.props.setActiveModal("profile", {
+                  avatar: el.avatar,
+                  user_id: el.user_id,
+                  name: el.name,
+                  text: el.description,
+                  battletag: el.battletag,
+                  tag: tag,
+                  verified: verified,
+                  discord: el.discord,
+                  age: el.age,
+                  time1: el.time1,
+                  time2: el.time2,
+                  microphone: el.microphone,
+                });
+              }}
             >
-              {el.name}
-            </SimpleCell>
-            <MiniInfoCell
-              before={<Icon20ArticleOutline />}
-              textWrap="full"
-              textLevel="primary"
-            >
-              {el.description}
-            </MiniInfoCell>
-            <MiniInfoCell
-              before={<Icon20UserCircleOutline />}
-              textWrap="full"
-              textLevel="primary"
-            >
-              {el.battletag
-                ? "К профилю привязан игровой аккаунт"
-                : "К профилю не привязан игровой аккаунт"}
-            </MiniInfoCell>
-            {el.verified == 1 && (
+              <SimpleCell
+                disabled
+                description={tag}
+                after={<Icon28ChevronRightOutline />}
+                badge={verified}
+                before={<Avatar size={40} src={el.avatar} />}
+              >
+                {el.name}
+              </SimpleCell>
               <MiniInfoCell
-                before={<Icon20CheckCircleOutline fill="#4cad64" />}
+                before={<Icon20ArticleOutline />}
                 textWrap="full"
                 textLevel="primary"
               >
-                Разработчик или партнёр сервиса
+                {el.description}
               </MiniInfoCell>
-            )}
-          </Card>
-        );
+              <MiniInfoCell
+                before={<Icon20UserCircleOutline />}
+                textWrap="full"
+                textLevel="primary"
+              >
+                {el.battletag
+                  ? "К профилю привязан игровой аккаунт"
+                  : "К профилю не привязан игровой аккаунт"}
+              </MiniInfoCell>
+              {el.verified == 1 && (
+                <MiniInfoCell
+                  before={<Icon20CheckCircleOutline fill="#4cad64" />}
+                  textWrap="full"
+                  textLevel="primary"
+                >
+                  Разработчик или партнёр сервиса
+                </MiniInfoCell>
+              )}
+            </Card>
+          );
+        });
+        setTimeout(() => {
+          this.setState({ wall: wall, fetching: false });
+        }, 300);
       });
-      setTimeout(() => {
-        this.setState({ wall: wall, fetching: false });
-      }, 300);
-    });
+    } else {
+      setInterval(() => {this.setState({fetching: false})}, 250)
+    }
   }
 
   componentWillUnmount() {
@@ -314,7 +318,6 @@ class FindTeammate extends React.Component {
                   "Эм, окей!",
                   "Твой профиль скрыт из ленты",
                   "Окей, спасибо!",
-                  "findteammate",
                   true
                 );
               } else if (data.result === "cooldown") {
@@ -323,7 +326,6 @@ class FindTeammate extends React.Component {
                   "Эй, притормози!",
                   "Переключать тумблеры можно раз в 5 секунд!",
                   "Ладно-ладно!",
-                  "findteammate",
                   false
                 );
               }
@@ -338,7 +340,6 @@ class FindTeammate extends React.Component {
                   "Вжух!",
                   "Теперь твой профиль видят другие люди в ленте. К тому же, теперь тебе доступна эта самая лента.",
                   "Круто!",
-                  "findteammate",
                   true
                 );
               } else if (data.result === "cooldown") {
@@ -347,7 +348,6 @@ class FindTeammate extends React.Component {
                   "Эй, притормози!",
                   "Переключать тумблеры можно раз в 5 секунд!",
                   "Ладно-ладно!",
-                  "findteammate",
                   false
                 );
               }
@@ -361,10 +361,9 @@ class FindTeammate extends React.Component {
             if (data.result === "ok") {
               this.props.tapticEngine();
               this.props.openTextPage(
-                "А - анонимность",
-                "Теперь твой батлнет-тег никто не увидит.",
+                "Спасибо за анонимность!",
+                "Теперь твой батлнет-тег никто не увидит. И даже ты.",
                 "Да я знаю, лол",
-                "findteammate",
                 true
               );
             } else if (data.result === "cooldown") {
@@ -373,7 +372,6 @@ class FindTeammate extends React.Component {
                 "Эй, притормози!",
                 "Переключать тумблеры можно раз в 5 секунд!",
                 "Ладно-ладно!",
-                "findteammate",
                 false
               );
             }

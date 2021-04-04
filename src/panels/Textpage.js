@@ -13,7 +13,7 @@ import { Icon36DoneOutline, Icon36CancelOutline } from "@vkontakte/icons";
 
 import "../css/Intro.css";
 
-const Textpage = ({ id, go, title, text, link, button, success }) => {
+const Textpage = ({ id, go, title, text, button, success }) => {
   return (
     <Panel id={id} centered={true}>
       <Fragment>
@@ -38,7 +38,7 @@ const Textpage = ({ id, go, title, text, link, button, success }) => {
               stretched
               mode="secondary"
               onClick={() => {
-                go(link);
+                go();
               }}
             >
               {button}

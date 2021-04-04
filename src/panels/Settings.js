@@ -1,5 +1,4 @@
 import React from "react";
-import bridge from "@vkontakte/vk-bridge";
 import fetch2 from "../components/Fetch";
 import {
   Panel,

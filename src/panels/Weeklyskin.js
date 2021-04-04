@@ -49,6 +49,7 @@ class Weeklyskin extends React.Component {
             caption="Этот скин невозможно приобрести за монеты."
             maxHeight={200}
             onClick={() => {
+              this.props.clinkOnLink;
               this.openImage(
                 "https://sun9-47.userapi.com/impg/LPQJwuF3nLPsuuh6uphZenRfzDFgvSoi_oN3tg/lN0eKPDavS0.jpg?size=1280x719&quality=96&sign=a19c502076b0cb982eed0f4bd57a1122&type=album"
               );

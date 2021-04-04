@@ -43,6 +43,7 @@ import Gameprofile from "./panels/Gameprofile";
 import FindTeammate from "./panels/FindTeammate";
 import Textpage from "./panels/Textpage";
 import Settings from "./panels/Settings";
+import Weeklyskin from "./panels/Weeklyskin";
 
 const ROUTES = {
   HOME: "home",
@@ -57,6 +58,8 @@ const ROUTES = {
   FINDTEAMMATE: "findteammate",
   TEXTPAGE: "textpage",
   SETTINGS: "settings",
+  WEEKLYSKIN: "weeklyskin",
+  UPDATE: "update"
 };
 
 const STORAGE_KEYS = {
@@ -196,7 +199,6 @@ class App extends React.Component {
         "Оу, кто вернулся?",
         "Теперь ты можешь продолжить наслаждаться приложением!",
         "Окей, понятно",
-        "home",
         true
       );
     });
@@ -345,6 +347,7 @@ class App extends React.Component {
   goBack = () => {
     if (this.state.activeModal !== null) this.setActiveModal(null);
     if (this.state.activePanel == "settings") this.setState({ tab: "profile" });
+    if (this.state.activePanel == "textpage") this.setState({ tab: "profile" });
     const history = [...this.state.history];
     history.pop();
     const activePanel = history[history.length - 1];
@@ -368,13 +371,12 @@ class App extends React.Component {
     } else bridge.send("VKWebAppClose", { status: "success" });
   };
 
-  openTextPage(title, text, button, link, success) {
+  openTextPage(title, text, button, success) {
     this.setState({
       textpage: {
         title: title,
         text: text,
         button: button,
-        link: link,
         success: success,
       },
     });
@@ -664,6 +666,11 @@ class App extends React.Component {
             link={this.state.textpage.link}
             success={this.state.textpage.success}
             go={this.goBack}
+          />
+          <Weeklyskin
+            id={ROUTES.WEEKLYSKIN}
+            go={this.goBack}
+            clickOnLink={this.clickOnLink}
           />
         </View>
       </ConfigProvider>

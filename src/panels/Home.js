@@ -1,5 +1,6 @@
 import React from "react";
 import bridge from "@vkontakte/vk-bridge";
+import moment from 'moment';
 import {
   Group,
   Header,
@@ -18,6 +19,7 @@ import {
   Tabbar,
   TabbarItem,
   CardGrid,
+  Banner,
   Epic,
 } from "@vkontakte/vkui";
 import {
@@ -33,6 +35,7 @@ import {
   Icon28GameOutline,
   Icon28Profile,
   Icon28SearchLikeOutline,
+  Icon48DonateOutline,
 } from "@vkontakte/icons";
 
 import fetch2 from "../components/Fetch";
@@ -330,6 +333,7 @@ class Home extends React.Component {
               Главная
             </PanelHeader>
             <Group>
+              <Banner before={<Icon48DonateOutline />} onClick={() => {go('weeklyskin')}} header={"До смерти разработчика: " + moment("2021-04-10").diff(moment().format(), "days") + " д. p.s. это тест раздел"} asideMode="expand" />
               <SimpleCell
                 onClick={() => go("gameprofile")}
                 expandable
