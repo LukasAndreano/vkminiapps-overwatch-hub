@@ -24,7 +24,7 @@ import {
 } from "@vkontakte/vkui";
 import {
   Icon28Notifications,
-  Icon28MoonOutline,
+  Icon28CubeBoxOutline,
   Icon28NewsfeedOutline,
   Icon28HelpCircleOutline,
   Icon28FaceRecognitionOutline,
@@ -351,9 +351,9 @@ class Home extends React.Component {
               <SimpleCell
                 onClick={() => go("update")}
                 expandable
-                before={<Icon28MoonOutline />}
+                before={<Icon28CubeBoxOutline />}
               >
-                Лунный Новый год
+                Архивы
               </SimpleCell>
               <SimpleCell
                 onClick={() => go("mems")}
