@@ -157,7 +157,7 @@ class FindTeammate extends React.Component {
       if (this.props.tab === "profile") {
         this.setState({ activeStory: "profile" });
       }
-    }, 600);
+    }, 1000);
     fetch2("teammates.getProfile").then((data) => {
       if (data.result === "created") this.props.setActiveModal("start1");
       this.setState({ profile: data.result });
@@ -302,7 +302,7 @@ class FindTeammate extends React.Component {
       }
       setTimeout(() => {
         this.setState({ spinner: false });
-      }, 500);
+      }, 800);
     });
   }
 

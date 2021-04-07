@@ -333,7 +333,7 @@ class Home extends React.Component {
               Главная
             </PanelHeader>
             <Group>
-              <Banner before={<Icon48DonateOutline />} onClick={() => {go('weeklyskin')}} header={"До смерти разработчика: " + moment("2021-04-10").diff(moment().format(), "days") + " д. p.s. это тест раздел"} asideMode="expand" />
+              <Banner before={<Icon48DonateOutline />} onClick={() => {go('weeklyskin')}} header={"До конца первой недели испытаний: " + moment("2021-04-14").diff(moment().format(), "days") + " д."} asideMode="expand" />
               <SimpleCell
                 onClick={() => go("gameprofile")}
                 expandable

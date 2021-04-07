@@ -346,8 +346,7 @@ class App extends React.Component {
 
   goBack = () => {
     if (this.state.activeModal !== null) this.setActiveModal(null);
-    if (this.state.activePanel == "settings") this.setState({ tab: "profile" });
-    if (this.state.activePanel == "textpage") this.setState({ tab: "profile" });
+    if (this.state.activePanel == "settings" || this.state.activePanel == "textpage") this.setState({ tab: "profile" });
     const history = [...this.state.history];
     history.pop();
     const activePanel = history[history.length - 1];
@@ -555,7 +554,7 @@ class App extends React.Component {
           id="start4"
           onClose={() => {
             this.setActiveModal(null);
-            this.go("settings");
+            setTimeout(() => {this.go("settings");}, 500)
           }}
           icon={<Icon56NotePenOutline />}
           header="Ну что, начнём?"
@@ -567,9 +566,9 @@ class App extends React.Component {
               size="l"
               mode="primary"
               onClick={() => {
-                this.setActiveModal(null);
-                this.go("settings");
+                setTimeout(() => {this.go("settings");}, 500)
                 this.clickOnLink;
+                this.setActiveModal(null);
               }}
             >
               Ох, ну начнём!

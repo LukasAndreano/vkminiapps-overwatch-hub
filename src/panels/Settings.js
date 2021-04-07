@@ -69,6 +69,10 @@ class Settings extends React.Component {
           ),
         });
       } else {
+        if (this.state.discord !== undefined && this.state.discord !== null)
+          var discord = this.state.discord.replace(/#/g, "-").trim()
+        else
+          var discord = ''
         fetch2(
           "teammates.setSettings",
           "type=main&about=" +
@@ -82,7 +86,7 @@ class Settings extends React.Component {
             "&time2=" +
             encodeURI(this.state.playtime[1]) +
             "&discord=" +
-            encodeURI(this.state.discord.replace(/#/g, "-").trim())
+            encodeURI(discord)
         ).then((data) => {
           if (data.result === "ok") {
             setTimeout(() => {

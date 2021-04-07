@@ -10,7 +10,7 @@ import {
   CardGrid,
 } from "@vkontakte/vkui";
 
-import event_march_hog from "../img/event_march_hog.jpg";
+import week1 from "../img/events/week1.webp";
 
 class Weeklyskin extends React.Component {
   constructor(props) {
@@ -43,15 +43,15 @@ class Weeklyskin extends React.Component {
                 ),
               });
             }}
-            image={event_march_hog}
-            header="Скин на Турбосвина"
-            text="Одерживайте победы в «Быстрой игре», «Соревновательной игре» или «Аркаде», чтобы получить скин для Турбосвина. Для получения необходимо совершить 9 побед."
+            image={week1}
+            header="Скин на Лусио"
+            text="Зарабатывайте звёзды в PvE-миссиях и получайте награды! Для получения эпического облика на Лусио «Гонщик» необходимо получить 30 звёзд."
             caption="Этот скин невозможно приобрести за монеты."
             maxHeight={200}
             onClick={() => {
               this.props.clinkOnLink;
               this.openImage(
-                "https://sun9-47.userapi.com/impg/LPQJwuF3nLPsuuh6uphZenRfzDFgvSoi_oN3tg/lN0eKPDavS0.jpg?size=1280x719&quality=96&sign=a19c502076b0cb982eed0f4bd57a1122&type=album"
+                "https://sun9-11.userapi.com/impg/oSqum8-KFljl5ObLwbsYl_J61FGeYIIp8cHPHg/V54sOBA2cHw.jpg?size=1280x720&quality=96&sign=82a71d53b172c47e8ea2505acda36b5d&type=album"
               );
             }}
             disabled
