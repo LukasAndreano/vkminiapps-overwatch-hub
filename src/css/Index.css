@@ -1,26 +1,32 @@
 body {
-	-webkit-touch-callout: none; 
-	-webkit-user-select: none;   
-	-khtml-user-select: none;   
-	-moz-user-select: none;     
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
 }
-input, input:before, input:after {
-      -webkit-user-select: initial;
-      -khtml-user-select: initial;
-      -moz-user-select: initial;
-      -ms-user-select: initial;
-      user-select: initial;
+input,
+input:before,
+input:after {
+	-webkit-user-select: initial;
+	-khtml-user-select: initial;
+	-moz-user-select: initial;
+	-ms-user-select: initial;
+	user-select: initial;
 }
 .UpdateBlock {
 	margin-bottom: 10px;
 }
-a,a:hover,a:active {
+a,
+a:hover,
+a:active {
 	text-decoration: none;
 	color: var(--text_primary);
 }
-.fixButton,.fixButton:hover,.fixButton:active {
+.fixButton,
+.fixButton:hover,
+.fixButton:active {
 	text-decoration: none;
 	color: var(--button_primary_foreground);
 }
@@ -30,7 +36,7 @@ a,a:hover,a:active {
 .WelcomeBlock .Avatar {
 	padding-bottom: 20px;
 }
-.Tappable--android .SimpleCell--android .PanelHeaderContext--opened  {
+.Tappable--android .SimpleCell--android .PanelHeaderContext--opened {
 	margin-top: 60px !important;
 }
 .Tabbar {
@@ -49,7 +55,8 @@ a,a:hover,a:active {
 .content {
 	width: 100%;
 }
-.TabbarItem__in:hover,.Switch:hover {
+.TabbarItem__in:hover,
+.Switch:hover {
 	cursor: pointer;
 }
 .Radio {

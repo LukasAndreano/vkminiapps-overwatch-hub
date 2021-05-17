@@ -1,50 +1,52 @@
 {
-  "name": "OWHUB",
-  "version": "1.3.0",
-  "description": "Список аркад, статистика профиля, поиск напарников, новости, мемы, скриншоты и арты - всё в одном приложении.",
-  "main": "index.js",
-  "scripts": {
-    "start": "cross-env react-scripts start",
-    "build": "react-scripts build -p",
-    "predeploy": "npm run build",
-    "deploy": "vk-miniapps-deploy"
-  },
-  "keywords": [],
-  "author": "Nikita Balin",
-  "license": "MIT",
-  "devDependencies": {
-    "cross-env": "^5.2.1",
-    "react-scripts": "^4.0.1",
-    "uglify-js-brunch": "^2.10.0"
-  },
-  "dependencies": {
-    "@vkontakte/icons": "^1.88.0",
-    "@vkontakte/vk-bridge": "^2.4.0",
-    "@vkontakte/vk-miniapps-deploy": "^0.0.17",
-    "@vkontakte/vkjs": "^0.20.0",
-    "@vkontakte/vkui": "^4.2.1",
-    "core-js": "^3.8.3",
-    "eruda": "^2.4.1",
-    "eruda-code": "^2.0.0",
-    "eruda-dom": "^2.0.0",
-    "moment": "^2.29.1",
-    "prop-types": "^15.7.2",
-    "query-string": "^6.14.1",
-    "react": "^16.14.0",
-    "react-confetti": "^6.0.0",
-    "react-dom": "^16.14.0",
-    "smoothscroll-polyfill": "^0.4.4"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"name": "OWHUB",
+	"version": "1.3.0",
+	"description": "Список аркад, статистика профиля, поиск напарников, новости, мемы, скриншоты и арты - всё в одном приложении.",
+	"main": "index.js",
+	"scripts": {
+		"start": "cross-env react-scripts start",
+		"build": "react-scripts build",
+		"prettier": "npx prettier --write .",
+		"predeploy": "npm run prettier && npm run build",
+		"deploy": "vk-miniapps-deploy"
+	},
+	"keywords": [],
+	"author": "Nikita Balin",
+	"license": "MIT",
+	"devDependencies": {
+		"cross-env": "^5.2.1",
+		"react-scripts": "^4.0.1",
+		"uglify-js-brunch": "^2.10.0"
+	},
+	"dependencies": {
+		"@vkontakte/icons": "^1.88.0",
+		"@vkontakte/vk-bridge": "^2.4.0",
+		"@vkontakte/vk-miniapps-deploy": "^0.0.17",
+		"@vkontakte/vkjs": "^0.20.0",
+		"@vkontakte/vkui": "^4.2.1",
+		"core-js": "^3.8.3",
+		"eruda": "^2.4.1",
+		"eruda-code": "^2.0.0",
+		"eruda-dom": "^2.0.0",
+		"moment": "^2.29.1",
+		"prettier": "^2.2.1",
+		"prop-types": "^15.7.2",
+		"query-string": "^6.14.1",
+		"react": "^16.14.0",
+		"react-confetti": "^6.0.0",
+		"react-dom": "^16.14.0",
+		"smoothscroll-polyfill": "^0.4.4"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
 }
