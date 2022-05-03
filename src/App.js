@@ -238,7 +238,7 @@ class App extends React.Component {
 		) {
 			fetch(
 				"https://owapi.io/profile/pc/eu/" +
-				profileData.battletag.replace(/#/g, "-")
+					profileData.battletag.replace(/#/g, "-")
 			)
 				.then((response) => response.json())
 				.then((data) => {
@@ -461,9 +461,9 @@ class App extends React.Component {
 								Discord:{" "}
 								{this.state.profile.discord
 									? this.state.profile.discord.replace(
-										/-/g,
-										"#"
-									)
+											/-/g,
+											"#"
+									  )
 									: "Не привязан"}{" "}
 								<br />
 								<br />
@@ -486,21 +486,21 @@ class App extends React.Component {
 										{this.state.profileDataInfoSuccess
 											.competitive.tank.rank
 											? this.state.profileDataInfoSuccess
-												.competitive.tank.rank
+													.competitive.tank.rank
 											: "калибровка"}
 										<br />
 										Дамагеры -{" "}
 										{this.state.profileDataInfoSuccess
 											.competitive.damage.rank
 											? this.state.profileDataInfoSuccess
-												.competitive.damage.rank
+													.competitive.damage.rank
 											: "калибровка"}
 										<br />
 										Хилы -{" "}
 										{this.state.profileDataInfoSuccess
 											.competitive.support.rank
 											? this.state.profileDataInfoSuccess
-												.competitive.support.rank
+													.competitive.support.rank
 											: "калибровка"}
 									</div>
 								)}

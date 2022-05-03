@@ -185,10 +185,11 @@ class Arts extends React.Component {
 						aside={
 							<Icon16Dropdown
 								style={{
-									transform: `rotate(${this.state.contextOpened
+									transform: `rotate(${
+										this.state.contextOpened
 											? "180deg"
 											: "0"
-										})`,
+									})`,
 								}}
 							/>
 						}

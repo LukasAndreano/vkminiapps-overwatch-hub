@@ -526,7 +526,7 @@ class FindTeammate extends React.Component {
 											description={
 												this.state.profileTag
 													? this.state.profile[0]
-														.battletag
+															.battletag
 													: "Профиль скрыт или отсутствует"
 											}
 											badge={
@@ -548,7 +548,7 @@ class FindTeammate extends React.Component {
 											description={
 												this.state.profileTag
 													? this.state.profile[0]
-														.battletag
+															.battletag
 													: "Профиль скрыт или отсутствует"
 											}
 											before={
@@ -595,35 +595,35 @@ class FindTeammate extends React.Component {
 									<Header>Настройки профиля</Header>
 									{this.state.profile[0].description !==
 										null && (
-											<SimpleCell
-												before={<Icon28GhostOutline />}
-												disabled
-												description="Показывать тебя в ленте другим?"
-												onChange={() => {
-													this.props.clickOnLink();
-												}}
-												after={
-													this.state.switches
-														.displayInSearch
-												}
-											>
-												Отображение профиля
-											</SimpleCell>
-										)}
+										<SimpleCell
+											before={<Icon28GhostOutline />}
+											disabled
+											description="Показывать тебя в ленте другим?"
+											onChange={() => {
+												this.props.clickOnLink();
+											}}
+											after={
+												this.state.switches
+													.displayInSearch
+											}
+										>
+											Отображение профиля
+										</SimpleCell>
+									)}
 									{this.state.profile[0].description ===
 										null && (
-											<SimpleCell
-												before={<Icon28GhostOutline />}
-												description="Недоступно, пока не заполнен профиль"
-												onClick={() => {
-													this.props.clickOnLink();
-													go("settings");
-												}}
-												after={<Switch disabled />}
-											>
-												Отображение профиля
-											</SimpleCell>
-										)}
+										<SimpleCell
+											before={<Icon28GhostOutline />}
+											description="Недоступно, пока не заполнен профиль"
+											onClick={() => {
+												this.props.clickOnLink();
+												go("settings");
+											}}
+											after={<Switch disabled />}
+										>
+											Отображение профиля
+										</SimpleCell>
+									)}
 									<SimpleCell
 										onClick={() => {
 											go("settings");
@@ -632,7 +632,7 @@ class FindTeammate extends React.Component {
 										description={
 											this.state.profile[0].description
 												? this.state.profile[0]
-													.description
+														.description
 												: "Расскажи о себе, ну же!"
 										}
 										after={<Icon28EditOutline />}
@@ -650,7 +650,7 @@ class FindTeammate extends React.Component {
 										>
 											{this.state.profile[0].battletag
 												? this.state.profile[0]
-													.battletag
+														.battletag
 												: "[Скрыт]"}
 										</SimpleCell>
 									)}

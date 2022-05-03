@@ -86,17 +86,17 @@ class Settings extends React.Component {
 				fetch2(
 					"teammates.setSettings",
 					"type=main&about=" +
-					encodeURI(this.state.about.trim()) +
-					"&microphone=" +
-					encodeURI(this.state.micro) +
-					"&age=" +
-					encodeURI(this.state.age.trim()) +
-					"&time1=" +
-					encodeURI(this.state.playtime[0]) +
-					"&time2=" +
-					encodeURI(this.state.playtime[1]) +
-					"&discord=" +
-					encodeURI(discord)
+						encodeURI(this.state.about.trim()) +
+						"&microphone=" +
+						encodeURI(this.state.micro) +
+						"&age=" +
+						encodeURI(this.state.age.trim()) +
+						"&time1=" +
+						encodeURI(this.state.playtime[0]) +
+						"&time2=" +
+						encodeURI(this.state.playtime[1]) +
+						"&discord=" +
+						encodeURI(discord)
 				).then((data) => {
 					if (data.result === "ok") {
 						setTimeout(() => {

@@ -165,10 +165,11 @@ class Screenshots extends React.Component {
 						aside={
 							<Icon16Dropdown
 								style={{
-									transform: `rotate(${this.state.contextOpened
-										? "180deg"
-										: "0"
-										})`,
+									transform: `rotate(${
+										this.state.contextOpened
+											? "180deg"
+											: "0"
+									})`,
 								}}
 							/>
 						}

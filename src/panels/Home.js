@@ -308,7 +308,7 @@ class Home extends React.Component {
 					}, 100);
 				break;
 			default:
-				scroll = 0
+				scroll = 0;
 				break;
 		}
 		this.setState({ activeStory: e.currentTarget.dataset.story });
@@ -337,14 +337,6 @@ class Home extends React.Component {
 								text="Меню"
 							>
 								<Icon28AllCategoriesOutline />
-							</TabbarItem>
-							<TabbarItem
-								selected={this.state.activeStory === "arcades"}
-								data-story="arcades"
-								onClick={this.openPage}
-								text="Аркады"
-							>
-								<Icon28GameOutline />
 							</TabbarItem>
 						</Tabbar>
 					}

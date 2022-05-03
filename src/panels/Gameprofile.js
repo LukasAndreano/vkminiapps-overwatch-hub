@@ -56,7 +56,7 @@ class Gameprofile extends React.Component {
 					try {
 						fetch(
 							"https://owapi.io/profile/pc/eu/" +
-							data.result.replace("#", "-")
+								data.result.replace("#", "-")
 						)
 							.then((response) => response.json())
 							.then((data) => {
@@ -416,28 +416,28 @@ class Gameprofile extends React.Component {
 															.competitive.support
 															.rank
 															? this.state
-																.profileinfo
-																.competitive
-																.support
-																.rank
+																	.profileinfo
+																	.competitive
+																	.support
+																	.rank
 															: "пройди калибровку"}
 														<br /> Урон -{" "}
 														{this.state.profileinfo
 															.competitive.damage
 															.rank
 															? this.state
-																.profileinfo
-																.competitive
-																.damage.rank
+																	.profileinfo
+																	.competitive
+																	.damage.rank
 															: "пройди калибровку"}
 														<br /> Танк -{" "}
 														{this.state.profileinfo
 															.competitive.tank
 															.rank
 															? this.state
-																.profileinfo
-																.competitive
-																.tank.rank
+																	.profileinfo
+																	.competitive
+																	.tank.rank
 															: "пройди калибровку"}
 													</MiniInfoCell>
 													<MiniInfoCell
@@ -453,9 +453,9 @@ class Gameprofile extends React.Component {
 														{this.state.profileinfo
 															.playtime.quickplay
 															? this.state
-																.profileinfo
-																.playtime
-																.quickplay
+																	.profileinfo
+																	.playtime
+																	.quickplay
 															: "0"}
 														<br />
 														Ранкед (этот сезон) -{" "}
@@ -463,9 +463,9 @@ class Gameprofile extends React.Component {
 															.playtime
 															.competitive
 															? this.state
-																.profileinfo
-																.playtime
-																.competitive
+																	.profileinfo
+																	.playtime
+																	.competitive
 															: "0"}
 													</MiniInfoCell>
 												</Group>
@@ -526,10 +526,10 @@ class Gameprofile extends React.Component {
 														{this.state.profileinfo
 															.games.quickplay.won
 															? this.state
-																.profileinfo
-																.games
-																.quickplay
-																.won
+																	.profileinfo
+																	.games
+																	.quickplay
+																	.won
 															: "0"}
 														<br />
 														Поражений в быстрой
@@ -537,18 +537,18 @@ class Gameprofile extends React.Component {
 														{this.state.profileinfo
 															.games.quickplay
 															.played -
-															this.state.profileinfo
-																.games.quickplay.won
+														this.state.profileinfo
+															.games.quickplay.won
 															? this.state
-																.profileinfo
-																.games
-																.quickplay
-																.played -
-															this.state
-																.profileinfo
-																.games
-																.quickplay
-																.won
+																	.profileinfo
+																	.games
+																	.quickplay
+																	.played -
+															  this.state
+																	.profileinfo
+																	.games
+																	.quickplay
+																	.won
 															: "0"}
 														<br />
 														Матчей всего:{" "}
@@ -556,10 +556,10 @@ class Gameprofile extends React.Component {
 															.games.quickplay
 															.played
 															? this.state
-																.profileinfo
-																.games
-																.quickplay
-																.played
+																	.profileinfo
+																	.games
+																	.quickplay
+																	.played
 															: "0"}
 														<br />
 														<br />
@@ -569,10 +569,10 @@ class Gameprofile extends React.Component {
 															.games.competitive
 															.won
 															? this.state
-																.profileinfo
-																.games
-																.competitive
-																.won
+																	.profileinfo
+																	.games
+																	.competitive
+																	.won
 															: "0"}
 														<br />
 														Поражений в ранкеде
@@ -580,19 +580,19 @@ class Gameprofile extends React.Component {
 														{this.state.profileinfo
 															.games.competitive
 															.played -
-															this.state.profileinfo
-																.games.competitive
-																.won
+														this.state.profileinfo
+															.games.competitive
+															.won
 															? this.state
-																.profileinfo
-																.games
-																.competitive
-																.played -
-															this.state
-																.profileinfo
-																.games
-																.competitive
-																.won
+																	.profileinfo
+																	.games
+																	.competitive
+																	.played -
+															  this.state
+																	.profileinfo
+																	.games
+																	.competitive
+																	.won
 															: "0"}
 														<br /> Матчей типа
 														'ничья' (этот сезон):{" "}
@@ -600,10 +600,10 @@ class Gameprofile extends React.Component {
 															.games.competitive
 															.draw
 															? this.state
-																.profileinfo
-																.games
-																.competitive
-																.draw
+																	.profileinfo
+																	.games
+																	.competitive
+																	.draw
 															: "0"}
 														<br />
 														Матчей всего (этот
@@ -612,10 +612,10 @@ class Gameprofile extends React.Component {
 															.games.competitive
 															.played
 															? this.state
-																.profileinfo
-																.games
-																.competitive
-																.played
+																	.profileinfo
+																	.games
+																	.competitive
+																	.played
 															: "0"}
 													</MiniInfoCell>
 												</Group>
@@ -624,22 +624,22 @@ class Gameprofile extends React.Component {
 									)}
 								{this.state.profileinfo.message ===
 									"Error: Profile not found" && (
-										<div>
-											<Card>
-												<MiniInfoCell
-													before={
-														<Icon24ErrorCircleOutline />
-													}
-													textWrap="full"
-													style={{ marginTop: 10 }}
-												>
-													Нам не удалось найти твой
-													профиль в Overwatch. Возможно, у
-													тебя нулевой аккаунт?
+									<div>
+										<Card>
+											<MiniInfoCell
+												before={
+													<Icon24ErrorCircleOutline />
+												}
+												textWrap="full"
+												style={{ marginTop: 10 }}
+											>
+												Нам не удалось найти твой
+												профиль в Overwatch. Возможно, у
+												тебя нулевой аккаунт?
 											</MiniInfoCell>
-											</Card>
-										</div>
-									)}
+										</Card>
+									</div>
+								)}
 								{this.state.profileinfo.username === "" && (
 									<div>
 										<Card>

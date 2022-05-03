@@ -4,11 +4,11 @@
 	"description": "Список аркад, статистика профиля, поиск напарников, новости, мемы, скриншоты и арты - всё в одном приложении.",
 	"main": "index.js",
 	"scripts": {
-		"start": "cross-env react-scripts start",
-		"build": "react-scripts build",
+		"start": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env react-scripts start",
+		"build": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts build",
 		"prettier": "npx prettier --write .",
 		"predeploy": "npm run prettier && npm run build",
-		"deploy": "vk-miniapps-deploy"
+		"deploy": "export NODE_OPTIONS=--openssl-legacy-provider && vk-miniapps-deploy"
 	},
 	"keywords": [],
 	"author": "Nikita Balin",
